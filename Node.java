@@ -4,6 +4,6 @@ import javalib.impworld.*;
 import java.awt.Color;
 import javalib.worldimages.*;
 
-class Vertex {
+class Node {
   
 }
