@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import tester.*;
 import javalib.impworld.*;
 import java.awt.Color;
@@ -11,5 +13,9 @@ class MazeWorld {
   // Maze represented as a 2D Arraylist of Nodes
   ArrayList<ArrayList<Node>> maze;
   
+  ArrayList<ArrayList<Edge>> edges;
   
+  HashMap<Posn, Node> hash;
+  
+  MazeWorld()
 }
