@@ -24,4 +24,24 @@ class Node {
     this.y = y;
     
   }
+  
+  void setNeighbor(String dir, Node given) {
+    if (dir.equals("up")) {
+      this.up = given;
+    }
+    else if (dir.equals("right")) {
+      this.right = given;
+    }
+    else if (dir.equals("down")) {
+      this.down = given;
+    }
+    else if (dir.equals("left")) {
+      this.left = given;
+    }
+    else {
+      throw new IllegalArgumentException("Not valid neighbor");
+    }
+  }
+  
+  void 
 }
