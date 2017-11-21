@@ -156,7 +156,7 @@ class Utils<T> {
 
   // return a random int
   int random() {
-    return (int) Math.random() * 100;
+    return (int)(Math.random() * 100);
   }
 }
 
@@ -178,7 +178,7 @@ class ExamplesMaze {
   // test Edge Creation
   void testInitEdges(Tester t) {
     this.initTest();
-    t.checkExpect(ex1.edges.size(), 64);
+    t.checkExpect(ex1.edges.size(), 16128);
   }
   // test the getValue method 
   void testGetValue(Tester t) {
@@ -192,5 +192,42 @@ class ExamplesMaze {
     t.checkExpect(u.getValue(matrix, p), 2);
     t.checkExpect(u.getValue(matrix, p2), 8);
   }
+  
+  // test get random value in the utils class
+  void testRandom(Tester t) {
+    this.initTest();
+    Utils<Integer> u = new Utils<Integer>();
+    t.checkNumRange(u.random(), 1, 100);
+  }
+  
+  // test the connect method in the Node class 
+  void testConnect(Tester t) {
+    Node n1 = new Node(new Posn(1,1));
+    Node n2 = new Node(new Posn(0,0));
+    Node n3 = new Node(new Posn(2,2));
+    Edge e1 = new Edge(1, n1, n2);
+    t.checkExpect(n1.connect(n2).to, n2);
+  }
+  // test init hash 
+  
+  // draw at 
+  
+  // test is Equal in the Posn class
+  void testIsEqual(Tester t) {
+    Posn p1 = new Posn(0,0); 
+    Posn p2 = new Posn(1, 0); 
+    Posn p3 = new Posn(1, 0);
+    
+    t.checkExpect(p1.isEqual(p2), false);
+    t.checkExpect(p2.isEqual(p3), true);
+  }
+  
+  // Test get Color 
+  void testGetColor(Tester t) {
+    this.initTest();
+    Node n = new Node(new Posn(0,0));
+    t.checkExpect(n.getColor(), Color.LIGHT_GRAY);
+  }
+  
 
 }

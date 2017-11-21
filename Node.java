@@ -24,8 +24,8 @@ class Node {
   public Edge connect(Node to) {
     Utils<Node> u = new Utils<Node>();
     int weight = u.random();
-    Edge e1 = new Edge(weight, this, to);
-    Edge e2 = new Edge(weight, to, this);
+    Edge e1 = new Edge(weight, to, this);
+    Edge e2 = new Edge(weight, this, to);
     this.outEdges.add(e1);
     to.outEdges.add(e2);
     return e1;
@@ -36,7 +36,7 @@ class Node {
         MazeWorld.NODE_SIZE, OutlineMode.SOLID, this.getColor() ), background);
   }
   
-  private Color getColor() {
+  public Color getColor() {
     return Color.LIGHT_GRAY;
   }
 }
