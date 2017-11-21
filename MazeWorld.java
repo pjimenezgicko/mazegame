@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import tester.*;
@@ -49,14 +50,11 @@ class MazeWorld {
     for (int i = 0; i < MAZE_SIZE; i++) {
       ArrayList<Node> temp = new ArrayList<Node>(MAZE_SIZE);
       for (int j = 0; j < MAZE_SIZE; j++) {
-        temp.set(j, new Node(new Posn(i, j)));
-
-        temp.set(j, new Node(new Posn(i, j)));
-
+        temp.add(j, new Node(new Posn(i, j)));
       }
-      this.maze.set(i, temp);
+      this.maze.add(i, temp);
     }
-    this.initEdges();
+    //this.initEdges();
   }
 
   // EFFECT: Create edges for the maze
@@ -166,10 +164,24 @@ class Utils<T> {
 }
 
 class ExamplesMaze {
-
+  MazeWorld ex1 = new MazeWorld();
   // test Edge creation 
-  void testInitEdges() {
-    
+  void testInitEdges(Tester t) {
+    ex1.initEmptyMaze();
+    t.checkExpect(ex1.maze.size(), 64);
+    t.checkExpect(ex1.maze.get(0).size(), 64);
+  }
+  
+  // test the getValue method 
+  void testGetValue(Tester t) {
+    Utils<Integer> u = new Utils<Integer>();
+    Posn p = new Posn(0,1);
+    Posn p2 = new Posn(1,3);
+    ArrayList<Integer> l1 = new ArrayList<Integer>(Arrays.asList(1,2,3,4));
+    ArrayList<Integer> l2 = new ArrayList<Integer>(Arrays.asList(5,6,7,8));
+    ArrayList<ArrayList<Integer>> matrix = new ArrayList<ArrayList<Integer>>(Arrays.asList(l1,l2));
+    t.checkExpect(u.getValue(matrix, p), 2);
+    t.checkExpect(u.getValue(matrix, p2), 8);
   }
 
 }
