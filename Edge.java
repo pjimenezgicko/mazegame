@@ -3,6 +3,7 @@ import java.awt.Color;
 import javalib.worldimages.LineImage;
 import javalib.worldimages.OutlineMode;
 import javalib.worldimages.OverlayImage;
+import javalib.worldimages.Posn;
 import javalib.worldimages.RectangleImage;
 import javalib.worldimages.WorldImage;
 

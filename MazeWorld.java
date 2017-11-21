@@ -50,6 +50,10 @@ class MazeWorld extends World{
       w.placeImageXY(n.drawAt(this.image,this), n.x * node, n.y * node);
       w.placeImageXY(new CircleImage(1,OutlineMode.SOLID, Color.RED), n.x * node, n.y * node);
     }
+    for (Edge e : this.edges) {
+      w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK), e.to.x * node, e.to.y * node);
+      w.placeImageXY(new LineImage(new Posn(0, node),  Color.BLACK), e.to.x * node, e.to.y * node);
+    }
 
     return w;
   }
@@ -314,7 +318,14 @@ class ExamplesMaze {
   
   // draw at 
   
-
+  // test is Equal in the Posn class
+  void testIsEqual(Tester t) {
+    Posn p1 = new Posn(0,0); 
+    Posn p2 = new Posn(1, 0); 
+    Posn p3 = new Posn(1, 0);
+    t.checkExpect(p1.equals(p2), false);
+    t.checkExpect(p2.equals(p3), true);
+  }
   
   // Test get Color 
   void testGetColor(Tester t) {
@@ -322,7 +333,6 @@ class ExamplesMaze {
     Node n = new Node(new Posn(0,0));
     t.checkExpect(n.getColor(ex1), Color.GREEN);
   }
-  
   // Test the rendering 
   void testRender(Tester t) {
     ex1 = new MazeWorld(25, 25); 
