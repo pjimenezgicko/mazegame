@@ -27,4 +27,13 @@ class Node {
     this.y = xy.y;
     this.out = out;
   }
+  
+  public WorldImage drawAt(WorldImage background) {
+    return new OverlayImage(new RectangleImage(MazeWorld.MAZE_SIZE,
+        MazeWorld.NODE_SIZE, OutlineMode.SOLID, this.getColor() ), background);
+  }
+  
+  private Color getColor() {
+    return Color.LIGHT_GRAY;
+  }
 }

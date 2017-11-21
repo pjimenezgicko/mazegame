@@ -6,7 +6,7 @@ import javalib.impworld.*;
 import java.awt.Color;
 import javalib.worldimages.*;
 
-class MazeWorld {
+class MazeWorld extends World{
   // Size of maze
   static final int           MAZE_SIZE = 64;
 
@@ -33,7 +33,7 @@ class MazeWorld {
   }
 
   public WorldScene makeScene() {
-    WorldScene w = new WorldScene(this.MAZE_SIZE * 100, MazeWorld.MAZE_SIZE);
+    WorldScene w = new WorldScene(MazeWorld.MAZE_SIZE * 100, MazeWorld.MAZE_SIZE * 100);
     
     // Render the Cells
     for (Node n : this.maze2) {
@@ -43,15 +43,15 @@ class MazeWorld {
     return w;
   }
 
-  //
+  // Init empty maze arraylist
   void initEmptyMaze() {
-    this.maze = new ArrayList<ArrayList<Node>>(MAZE_SIZE);
-    for (int i = 0; i < MAZE_SIZE; i++) {
-      ArrayList<Node> temp = new ArrayList<Node>(MAZE_SIZE);
-      for (int j = 0; j < MAZE_SIZE; j++) {
-        temp.set(j, new Node(new Posn(i, j)));
+    this.maze = new ArrayList<ArrayList<Node>>(0);
+    for (int i = 0; i < MazeWorld.MAZE_SIZE; i++) {
+      ArrayList<Node> temp = new ArrayList<Node>(0);
+      for (int j = 0; j < MazeWorld.MAZE_SIZE; j++) {
+        temp.add(new Node(new Posn(i, j)));
       }
-      this.maze.set(i, temp);
+      this.maze.add(temp);
     }
     this.initEdges();
   }
@@ -60,6 +60,7 @@ class MazeWorld {
 
   }
 
+  // Init hash table
   void initHash() {
     ArrayList<Node> tempMaze = new ArrayList<Node>(0);
     HashMap<Posn, Node> tempHash = new HashMap<Posn, Node>(0);
