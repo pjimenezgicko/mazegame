@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import tester.*;
@@ -148,7 +149,52 @@ class MazeWorld extends World{
     this.maze2 = tempMaze;
     this.hash = tempHash;
   }
+  
+  void KruskalsAlg() {
+    HashMap<Posn, Node> base = this.hash;
+    ArrayList<Edge> edges = this.edges;
+    ArrayList<Edge> span = new ArrayList<Edge>(0);
+    edges.sort(new SortWeight());
+    boolean isSpan = false;
+    
+    int edgeSize = edges.size() - 1;
+    Edge temp = edges.get(edgeSize);
+    span.add(temp);
+    base.put(temp.to.xy, temp.from);
+    edges.remove(edgeSize);
+    edgeSize--;
+
+    while(!isSpan) {
+      temp = edges.get(edgeSize);
+      // Find shortest edge and check if it creates a cycle
+      if(base.get(temp.to.xy).xy.isEqual(base.get(temp.from.xy).xy)) {
+        edges.remove(edgeSize);
+        edgeSize--;
+      }
+      else {
+        base.put(temp.to.xy, temp.from);
+        edges.remove(edgeSize);
+        edgeSize--;
+      }
+      
+      // Check if spanning tree is spanning
+      if(span.size() == this.maze2.size() - 1) {
+        isSpan = true;
+      }
+    }
+  }
 }
+
+class SortWeight implements Comparator<Edge>
+{
+    // Used for sorting in ascending order of
+    // roll number
+    public int compare(Edge a, Edge b)
+    {
+       return a.weight < b.weight ? -1 : a.weight == b.weight ? 0 : 1;
+    }
+}
+ 
 
 class Utils<T> {
 
