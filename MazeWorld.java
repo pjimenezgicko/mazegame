@@ -59,10 +59,22 @@ class MazeWorld extends World {
     
     // draw the inner walls
     for (Edge e : this.edges) {
-      w.placeImageXY(new LineImage(new Posn(0, -node), Color.BLACK).movePinhole(0, -node),
+     if(e.to.x < e.from.x) {
+      w.placeImageXY(new LineImage(new Posn(0, node), Color.YELLOW).movePinhole(0, -node),
           e.to.x * node, e.to.y * node - node / 2); // side
-      w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK), e.to.x * node + node / 2,
+     }
+     else if (e.to.x > e.from.x) {
+       w.placeImageXY(new LineImage(new Posn(0, node), Color.YELLOW).movePinhole(0, -node),
+           e.to.x * node, e.to.y * node - node / 2); // side
+      }
+     if(e.to.y < e.from.y) {
+       w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK), e.to.x * node + node / 2,
           e.to.y * node); // bottom
+      }
+     else if(e.to.y > e.from.y) {
+       w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK), e.to.x * node + node / 2,
+          e.to.y * node); // bottom
+      }
     }
 
     return w;
@@ -189,6 +201,7 @@ class MazeWorld extends World {
     this.maze2 = tempMaze;
     this.hash = tempHash;
   }
+
   void KruskalsAlg() {
     HashMap<Node, Node> base = new HashMap<Node, Node>();
     for (Node n : this.maze2) {
@@ -227,16 +240,14 @@ class MazeWorld extends World {
     Node b;
     int i = 1;
     while (!isSpan) {
-      temp = edges.get(0);
+      temp = edges.get(i);
       a = temp.to;
       b = temp.from;
 
       // Find shortest edge and check if it creates a cycle
-
       // If it doesn't create cycle, modify hash table
       if(baseRep(a, base) != (baseRep(b, base))) {
         base.put(baseRep(a, base), baseRep(b, base));
-        //union(a, b, base);
         // Add edge to spanning tree
         span.add(temp);
       }
