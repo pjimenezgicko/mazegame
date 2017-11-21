@@ -323,11 +323,6 @@ class ExamplesMaze {
     t.checkExpect(n.getColor(ex1), Color.GREEN);
   }
   
-  void testKruskalAlg(Tester t) {
-    this.initTest();
-    
-  }
-  
   // Test the rendering 
   void testRender(Tester t) {
     ex1 = new MazeWorld(25, 25); 
