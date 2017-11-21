@@ -13,6 +13,9 @@ class MazeWorld extends World{
 
   // Size of node
   static final int NODE_SIZE = 10;
+  
+  // Range of our random numbers
+  static final int RAND_RANGE = 20;
 
   // Maze represented as a 2D Arraylist of Nodes
   ArrayList<ArrayList<Node>> maze;
@@ -156,7 +159,7 @@ class Utils<T> {
 
   // return a random int
   int random() {
-    return (int)(Math.random() * 100);
+    return (int)(Math.random() * MazeWorld.RAND_RANGE);
   }
 }
 
@@ -197,17 +200,16 @@ class ExamplesMaze {
   void testRandom(Tester t) {
     this.initTest();
     Utils<Integer> u = new Utils<Integer>();
-    t.checkNumRange(u.random(), 1, 100);
+    t.checkNumRange(u.random(), 0, MazeWorld.RAND_RANGE);
   }
   
   // test the connect method in the Node class 
   void testConnect(Tester t) {
     Node n1 = new Node(new Posn(1,1));
     Node n2 = new Node(new Posn(0,0));
-    Node n3 = new Node(new Posn(2,2));
-    Edge e1 = new Edge(1, n1, n2);
     t.checkExpect(n1.connect(n2).to, n2);
   }
+  
   // test init hash 
   
   // draw at 
