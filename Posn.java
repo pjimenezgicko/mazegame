@@ -6,7 +6,6 @@ import javalib.impworld.*;
 import java.awt.Color;
 import javalib.worldimages.*;
 
-
 class Posn {
   int x;
   int y;

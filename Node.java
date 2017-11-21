@@ -5,27 +5,28 @@ import tester.*;
 import javalib.impworld.*;
 import java.awt.Color;
 import javalib.worldimages.*;
-
 class Node {
-  Posn xy;
   
+  ArrayList<Edge> outEdges;
+  Posn xy;
   int x;
   int y;
-  ArrayList<Edge> out;
   
-  
-  Node(Posn xy) {
-    this.xy = xy;
+  Node(Posn posn) {
+    this.outEdges = new ArrayList<Edge>();
+    this.xy = posn;
     this.x = xy.x;
     this.y = xy.y;
-    this.out = new ArrayList<Edge>(0);
   }
   
-  Node(Posn xy, ArrayList<Edge> out) {
-    this.xy = xy;
-    this.x = xy.x;
-    this.y = xy.y;
-    this.out = out;
+  // Effect: update the edges of this node and the given node
+  // return the edge that connects these two nodes
+  public Edge connect(Node to) {
+    Utils<Node> u = new Utils<Node>();
+    Edge e = new Edge(u.random(), this, to);
+    this.outEdges.add(e);
+    to.outEdges.add(e);
+    return e;
   }
   
   public WorldImage drawAt(WorldImage background) {
