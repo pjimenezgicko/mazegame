@@ -1,24 +1,21 @@
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import tester.*;
-import javalib.impworld.*;
 import java.awt.Color;
 import javalib.worldimages.*;
+
 class Node {
-  
+
   ArrayList<Edge> outEdges;
   Posn xy;
   int x;
   int y;
-  
+
   Node(Posn posn) {
     this.outEdges = new ArrayList<Edge>();
     this.xy = posn;
     this.x = xy.x;
     this.y = xy.y;
   }
-  
+
   // Effect: update the edges of this node and the given node
   // return the edge that connects these two nodes
   public Edge connect(Node to) {
@@ -30,18 +27,20 @@ class Node {
     to.outEdges.add(e2);
     return e1;
   }
-  
+
   public WorldImage drawAt(WorldImage background, MazeWorld world) {
-    return new OverlayOffsetImage(new RectangleImage(MazeWorld.NODE_SIZE,
-        MazeWorld.NODE_SIZE, OutlineMode.SOLID, this.getColor(world) ),
-        -1.5 * world.width, -1.5 * world.height, background);
+    return new OverlayOffsetImage(
+        new RectangleImage(MazeWorld.NODE_SIZE, MazeWorld.NODE_SIZE, OutlineMode.SOLID,
+            this.getColor(world)),
+        -2.5 * MazeWorld.NODE_SIZE + world.width, -2.5 * MazeWorld.NODE_SIZE + world.height,
+        background);
   }
-  
+
   public Color getColor(MazeWorld world) {
-    if(x == 0 && y == 0) {
+    if (x == 0 && y == 0) {
       return Color.GREEN;
     }
-    if (x == world.height - 1 && y == world.width -1) {
+    if (x == world.height - 1 && y == world.width - 1) {
       return Color.MAGENTA;
     }
     else {
