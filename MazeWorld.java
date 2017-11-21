@@ -51,8 +51,10 @@ class MazeWorld extends World{
       w.placeImageXY(new CircleImage(1,OutlineMode.SOLID, Color.RED), n.x * node, n.y * node);
     }
     for (Edge e : this.edges) {
-      w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK), e.to.x * node, e.to.y * node);
-      w.placeImageXY(new LineImage(new Posn(0, node),  Color.BLACK), e.to.x * node, e.to.y * node);
+      w.placeImageXY(new LineImage(new Posn(0, -node), Color.BLACK), e.to.x * node, e.to.y * node - node/2); // top 
+      w.placeImageXY(new LineImage(new Posn(0, node),  Color.BLACK), e.to.x * node, e.to.y * node - node/2); // bottom
+      w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK), e.to.x * node - node/2, e.to.y * node); // right 
+      w.placeImageXY(new LineImage(new Posn(-node, 0),  Color.BLACK), e.to.x * node - node/2, e.to.y * node); // left
     }
 
     return w;

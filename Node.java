@@ -34,7 +34,7 @@ class Node {
   public WorldImage drawAt(WorldImage background, MazeWorld world) {
     return new OverlayOffsetImage(new RectangleImage(MazeWorld.NODE_SIZE,
         MazeWorld.NODE_SIZE, OutlineMode.SOLID, this.getColor(world) ),
-        -1.0 * world.width, -1.0 * world.height, background);
+        -1.5 * world.width, -1.5 * world.height, background);
   }
   
   public Color getColor(MazeWorld world) {
