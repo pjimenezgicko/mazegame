@@ -166,16 +166,21 @@ class MazeWorld extends World{
   }
   
   void KruskalsAlg() {
-    HashMap<Posn, Node> base = this.hash;
-    ArrayList<Edge> edges = this.edges;
+    HashMap<Node, Node> base = new HashMap<Node, Node>();
+    for (Node n : this.maze2) {
+      base.put(n, n);
+//      System.out.println(n.x + "--" + n.y);
+    }
     ArrayList<Edge> span = new ArrayList<Edge>(0);
     edges.sort(new SortWeight());
+    for(Edge e : edges) {
+      System.out.println(e.weight);
+    }
     boolean isSpan = false;
     
     Edge temp = edges.get(0);
     span.add(temp);
-    base.put(temp.to.xy, temp.from);
-    edges.remove(0);
+    base.put(baseRep(temp.to, base), baseRep(temp.from, base));
     /*
     HashMap<String, String> representatives;
     List<Edge> edgesInTree;
@@ -193,41 +198,54 @@ class MazeWorld extends World{
             find(representatives, Y))
     Return the edgesInTree
     */
+    
     Node a;
     Node b;
-    
-    Posn apos;
-    Posn bpos;
+    int i = 1;
+    // While spanning tree isn't 1 less than num of nodes
     while(!isSpan) {
-      temp = edges.get(0);
+      // Initialize locals
+      temp = edges.get(i);
       a = temp.to;
-      apos = a.xy;
       b = temp.from;
-      bpos = b.xy;
 
       // Find shortest edge and check if it creates a cycle
-      // If it doesn't create cycle, 
-      if(!(base.get(apos).xy.equals((base.get(bpos).xy)))) {
-        union(a, b, base); 
+      // If it doesn't create cycle, modify hash table
+      if(baseRep(a, base) != (baseRep(b, base))){
+        base.put(baseRep(a, base), baseRep(b, base));
+        //union(a, b, base);
+        // Add edge to spanning tree
+        span.add(temp);
       }
-      edges.remove(0);
+      
+      // tick counter
+      i++;
       
       // Check if spanning tree is spanning
       if(span.size() == this.maze2.size() - 1) {
+        System.out.println(span.size() + "done" + i);
         isSpan = true;
       }
+      System.out.println(span.size() + "another" + i );
     }
-    for(Edge e : span) {
-      this.edges.remove(e);
+    
+    //this.edges = span;
+    // Remove spanning tree edges from master list of edges
+    ArrayList<Edge> tempArr = new ArrayList<Edge>(0);
+    for(Edge e : edges) {
+      if(!span.contains(e)) {
+        tempArr.add(e);
+      }
     }
+    this.edges = tempArr;
   }
   
-  void union(Node a, Node b, HashMap<Posn, Node> base) {
-    if(base.get(a.xy).xy.equals(a.xy)) {
-      base.put(a.xy, b);
+  Node baseRep(Node a, HashMap<Node, Node> base) {
+    if(base.get(a) == a) {
+      return a;
     }
     else {
-      union(base.get(a.xy), b, base);
+      return baseRep(base.get(a), base);
     }
   }
 }
