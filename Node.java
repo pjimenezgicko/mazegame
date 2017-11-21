@@ -31,8 +31,8 @@ class Node {
     return e1;
   }
   
-  public WorldImage drawAt(WorldImage background) {
-    return new OverlayImage(new RectangleImage(MazeWorld.MAZE_SIZE,
+  public WorldImage drawAt(WorldImage background, MazeWorld world) {
+    return new OverlayImage(new RectangleImage(world.size,
         MazeWorld.NODE_SIZE, OutlineMode.SOLID, this.getColor() ), background);
   }
   

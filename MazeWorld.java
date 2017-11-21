@@ -8,8 +8,9 @@ import java.awt.Color;
 import javalib.worldimages.*;
 
 class MazeWorld extends World{
-  // Size of maze
-  static final int MAZE_SIZE = 64;
+
+  // Size of the maze 
+  int size; 
 
   // Size of node
   static final int NODE_SIZE = 10;
@@ -30,17 +31,18 @@ class MazeWorld extends World{
   // image for the game
   WorldImage image = new EmptyImage();
   // temp for testing
-  WorldScene scene = new WorldScene(MAZE_SIZE * 100, MAZE_SIZE * 100);
-
-  MazeWorld() {
-
+  WorldScene scene = new WorldScene(this.size * 100, this.size * 100);
+  
+  // allows for variable sized mazes for testing
+  MazeWorld(int size) {
+    this.size = size;
   }
 
   public WorldScene makeScene() {
-    WorldScene w = new WorldScene(MazeWorld.MAZE_SIZE * 100, MazeWorld.MAZE_SIZE * 100);
+    WorldScene w = new WorldScene(this.size* 100, this.size * 100);
     // Render the Cells
     for (Node n : this.maze2) {
-      w.placeImageXY(n.drawAt(this.image), n.x * MazeWorld.NODE_SIZE, n.y * MazeWorld.NODE_SIZE);
+      w.placeImageXY(n.drawAt(this.image,this), n.x * MazeWorld.NODE_SIZE, n.y * MazeWorld.NODE_SIZE);
     }
 
     return w;
@@ -48,15 +50,16 @@ class MazeWorld extends World{
 
   // Init empty maze arraylist
   void initEmptyMaze() {
-    this.maze = new ArrayList<ArrayList<Node>>(MAZE_SIZE);
-    for (int i = 0; i < MAZE_SIZE; i++) {
-      ArrayList<Node> temp = new ArrayList<Node>(MAZE_SIZE);
-      for (int j = 0; j < MAZE_SIZE; j++) {
+    this.maze = new ArrayList<ArrayList<Node>>(this.size);
+    for (int i = 0; i < this.size; i++) {
+      ArrayList<Node> temp = new ArrayList<Node>(this.size);
+      for (int j = 0; j < this.size; j++) {
         temp.add(j, new Node(new Posn(i, j)));
       }
       this.maze.add(i, temp);
     }
     this.initEdges();
+    this.initHash();
   }
 
   // EFFECT: Create edges for the maze
@@ -166,26 +169,37 @@ class Utils<T> {
 class ExamplesMaze {
   MazeWorld ex1;
   
-  // set up the test conditions
-  void initTest() {
-   ex1 = new MazeWorld(); 
+  // set up the test conditions for a 64x64 maze
+  void initTest64() {
+   ex1 = new MazeWorld(64); 
    ex1.initEmptyMaze();
+  }
+  
+  // set up the test conditions for a 3x3 maze
+  void initTest3() {
+    ex1 = new MazeWorld(3);
+    ex1.initEmptyMaze();
   }
   // test making the empty maze 
   void testInitEmptyMaze(Tester t) {
-    this.initTest();
+    this.initTest64();
     t.checkExpect(ex1.maze.size(), 64);
     t.checkExpect(ex1.maze.get(0).size(), 64);
+    this.initTest3();
+    t.checkExpect(ex1.maze.size(), 3);
+    t.checkExpect(ex1.maze.get(0).size(), 3);
   }
   
   // test Edge Creation
   void testInitEdges(Tester t) {
-    this.initTest();
+    this.initTest64();
     t.checkExpect(ex1.edges.size(), 16128);
+    this.initTest3();
+    t.checkExpect(ex1.edges.size(), 24);
   }
   // test the getValue method 
   void testGetValue(Tester t) {
-    this.initTest();
+    this.initTest64();
     Utils<Integer> u = new Utils<Integer>();
     Posn p = new Posn(0,1);
     Posn p2 = new Posn(1,3);
@@ -198,7 +212,7 @@ class ExamplesMaze {
   
   // test get random value in the utils class
   void testRandom(Tester t) {
-    this.initTest();
+    this.initTest3();
     Utils<Integer> u = new Utils<Integer>();
     t.checkNumRange(u.random(), 0, MazeWorld.RAND_RANGE);
   }
@@ -211,6 +225,11 @@ class ExamplesMaze {
   }
   
   // test init hash 
+  void testInitHash(Tester t) {
+    this.initTest3();
+    t.checkExpect(ex1.hash.get(ex1.maze2.get(0).xy), ex1.maze2.get(0));
+    t.checkExpect(ex1.hash.get(ex1.maze2.get(6).xy), ex1.maze2.get(6));
+  }
   
   // draw at 
   
@@ -226,7 +245,7 @@ class ExamplesMaze {
   
   // Test get Color 
   void testGetColor(Tester t) {
-    this.initTest();
+    this.initTest3();
     Node n = new Node(new Posn(0,0));
     t.checkExpect(n.getColor(), Color.LIGHT_GRAY);
   }
