@@ -33,10 +33,18 @@ class Node {
   
   public WorldImage drawAt(WorldImage background, MazeWorld world) {
     return new OverlayImage(new RectangleImage(world.size,
-        MazeWorld.NODE_SIZE, OutlineMode.SOLID, this.getColor() ), background);
+        MazeWorld.NODE_SIZE, OutlineMode.SOLID, this.getColor(world) ), background);
   }
   
-  public Color getColor() {
-    return Color.LIGHT_GRAY;
+  public Color getColor(MazeWorld world) {
+    if(x == 0 && y == 0) {
+      return Color.GREEN;
+    }
+    if (x == world.size - 1 && y == world.size -1) {
+      return Color.MAGENTA;
+    }
+    else {
+      return Color.GRAY;
+    }
   }
 }

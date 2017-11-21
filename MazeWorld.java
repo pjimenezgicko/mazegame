@@ -13,7 +13,7 @@ class MazeWorld extends World{
   int size; 
 
   // Size of node
-  static final int NODE_SIZE = 10;
+  static final int NODE_SIZE = 25;
   
   // Range of our random numbers
   static final int RAND_RANGE = 20;
@@ -40,9 +40,11 @@ class MazeWorld extends World{
 
   public WorldScene makeScene() {
     WorldScene w = new WorldScene(this.size* 100, this.size * 100);
+    int node = MazeWorld.NODE_SIZE;
     // Render the Cells
     for (Node n : this.maze2) {
-      w.placeImageXY(n.drawAt(this.image,this), n.x * MazeWorld.NODE_SIZE, n.y * MazeWorld.NODE_SIZE);
+      w.placeImageXY(n.drawAt(this.image,this), n.x * node, n.y * node);
+      w.placeImageXY(new CircleImage(1,OutlineMode.SOLID, Color.RED), n.x * node, n.y * node);
     }
 
     return w;
@@ -247,8 +249,14 @@ class ExamplesMaze {
   void testGetColor(Tester t) {
     this.initTest3();
     Node n = new Node(new Posn(0,0));
-    t.checkExpect(n.getColor(), Color.LIGHT_GRAY);
+    t.checkExpect(n.getColor(ex1), Color.GREEN);
   }
   
-
+  // Test the rendering 
+  void testRender(Tester t) {
+    ex1 = new MazeWorld(25); 
+    ex1.initEmptyMaze();
+    ex1.bigBang(ex1.size * MazeWorld.NODE_SIZE,
+        ex1.size * MazeWorld.NODE_SIZE, .5);
+  }
 }
