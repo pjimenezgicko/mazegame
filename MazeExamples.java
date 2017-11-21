@@ -9,9 +9,6 @@ import javalib.worldimages.*;
 class MazeExamples {
   MazeWorld ex1 = new MazeWorld();
   
-  
-  
-  
   void testMaze(Tester t) {
     this.ex1.initEmptyMaze();
     this.ex1.initHash();
