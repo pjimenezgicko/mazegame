@@ -1,3 +1,10 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import tester.*;
+import javalib.impworld.*;
+import java.awt.Color;
+import javalib.worldimages.*;
 
 class Posn {
   int x;
