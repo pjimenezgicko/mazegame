@@ -7,41 +7,18 @@ import java.awt.Color;
 import javalib.worldimages.*;
 
 class Node {
-  Node up;
-  Node right;
-  Node down;
-  Node left;
+  Posn xy;
   
-  int x;
-  int y;
+  ArrayList<Edge> out;
   
-  Node(Node up, Node right, Node down, Node left, int x, int y) {
-    this.up = up;
-    this.right = right;
-    this.down = down;
-    this.left = left;
-    this.x = x;
-    this.y = y;
-    
+  
+  Node(Posn xy) {
+    this.xy = xy;
+    this.out = new ArrayList<Edge>(0);
   }
   
-  void setNeighbor(String dir, Node given) {
-    if (dir.equals("up")) {
-      this.up = given;
-    }
-    else if (dir.equals("right")) {
-      this.right = given;
-    }
-    else if (dir.equals("down")) {
-      this.down = given;
-    }
-    else if (dir.equals("left")) {
-      this.left = given;
-    }
-    else {
-      throw new IllegalArgumentException("Not valid neighbor");
-    }
+  Node(Posn xy, ArrayList<Edge> out) {
+    this.xy = xy;
+    this.out = out;
   }
-  
-  void 
 }
