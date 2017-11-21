@@ -23,10 +23,12 @@ class Node {
   // return the edge that connects these two nodes
   public Edge connect(Node to) {
     Utils<Node> u = new Utils<Node>();
-    Edge e = new Edge(u.random(), this, to);
-    this.outEdges.add(e);
-    to.outEdges.add(e);
-    return e;
+    int weight = u.random();
+    Edge e1 = new Edge(weight, this, to);
+    Edge e2 = new Edge(weight, to, this);
+    this.outEdges.add(e1);
+    to.outEdges.add(e2);
+    return e1;
   }
   
   public WorldImage drawAt(WorldImage background) {

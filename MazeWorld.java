@@ -17,7 +17,7 @@ class MazeWorld extends World{
   // Maze represented as a 2D Arraylist of Nodes
   ArrayList<ArrayList<Node>> maze;
 
-  ArrayList<Edge> edges;
+  ArrayList<Edge> edges = new ArrayList<Edge>();
 
   HashMap<Posn, Node> hash;
 
@@ -53,17 +53,15 @@ class MazeWorld extends World{
       }
       this.maze.add(i, temp);
     }
-    //this.initEdges();
+    this.initEdges();
   }
 
   // EFFECT: Create edges for the maze
   void initEdges() {
     Utils<Node> u = new Utils<Node>();
     // Edges for the top left corner
-    this.edges
-        .add(u.getValue(this.maze, new Posn(0, 0)).connect(u.getValue(this.maze, new Posn(1, 0))));
-    this.edges
-        .add(u.getValue(this.maze, new Posn(0, 0)).connect(u.getValue(this.maze, new Posn(0, 1))));
+    this.edges.add(u.getValue(this.maze, new Posn(0, 0)).connect(u.getValue(this.maze, new Posn(1, 0))));
+    this.edges.add(u.getValue(this.maze, new Posn(0, 0)).connect(u.getValue(this.maze, new Posn(0, 1))));
 
     // Edges for the top right corner
     int rightindex = this.maze.size() - 1;
@@ -123,7 +121,6 @@ class MazeWorld extends World{
     // Edges for the rest of the array
     for (int i = 1; i < this.maze.size() - 1; i++) {
       for (int j = 1; j < this.maze.get(0).size() - 1; j++) {
-        Node center = this.maze.get(i).get(j);
         Posn p = new Posn(i,j);
         this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i, j-1)))); // top
         this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i, j+1)))); // bottom
@@ -164,16 +161,28 @@ class Utils<T> {
 }
 
 class ExamplesMaze {
-  MazeWorld ex1 = new MazeWorld();
-  // test Edge creation 
-  void testInitEdges(Tester t) {
-    ex1.initEmptyMaze();
+  MazeWorld ex1;
+  
+  // set up the test conditions
+  void initTest() {
+   ex1 = new MazeWorld(); 
+   ex1.initEmptyMaze();
+  }
+  // test making the empty maze 
+  void testInitEmptyMaze(Tester t) {
+    this.initTest();
     t.checkExpect(ex1.maze.size(), 64);
     t.checkExpect(ex1.maze.get(0).size(), 64);
   }
   
+  // test Edge Creation
+  void testInitEdges(Tester t) {
+    this.initTest();
+    t.checkExpect(ex1.edges.size(), 64);
+  }
   // test the getValue method 
   void testGetValue(Tester t) {
+    this.initTest();
     Utils<Integer> u = new Utils<Integer>();
     Posn p = new Posn(0,1);
     Posn p2 = new Posn(1,3);
