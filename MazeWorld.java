@@ -50,9 +50,17 @@ class MazeWorld extends World {
       w.placeImageXY(n.drawAt(this.image, this), n.x * node, n.y * node);
       w.placeImageXY(new CircleImage(1, OutlineMode.SOLID, Color.RED), n.x * node, n.y * node);
     }
+
+    // draw the bottom border
+    w.placeImageXY(new LineImage(new Posn(node*this.width, 0), Color.BLACK).movePinhole(-(node*this.width)/2, -(node*this.height) + 1), 0, 0);
+    
+    // draw the right border
+    w.placeImageXY(new LineImage(new Posn(0, -node*this.height), Color.BLACK).movePinhole(-(node*this.width) + 1, -(node*this.height)/2 + 1), 0, 0);
+    
+    // draw the inner walls
     for (Edge e : this.edges) {
-      w.placeImageXY(new LineImage(new Posn(0, -node), Color.BLACK).movePinhole(0, -node), e.to.x * node,
-          e.to.y * node - node / 2); // side
+      w.placeImageXY(new LineImage(new Posn(0, -node), Color.BLACK).movePinhole(0, -node),
+          e.to.x * node, e.to.y * node - node / 2); // side
       w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK), e.to.x * node + node / 2,
           e.to.y * node); // bottom
     }
@@ -106,49 +114,62 @@ class MazeWorld extends World {
     // Edges for the left border
     for (int j = 1; j < this.maze.get(0).size() - 1; j++) {
       Posn p = new Posn(0, j);
-      this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(0, j - 1)))); // top
-      this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(0, j + 1)))); // bottom
-      this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(1, j)))); // right
+      this.edges.add(u.getValue(this.maze, p)
+          .connect(u.getValue(this.maze, new Posn(0, j - 1)))); // top
+      this.edges.add(u.getValue(this.maze, p)
+          .connect(u.getValue(this.maze, new Posn(0, j + 1)))); // bottom
+      this.edges.add(u.getValue(this.maze, p)
+          .connect(u.getValue(this.maze, new Posn(1, j)))); // right
     }
 
     // Edges for the right border
     for (int j = 1; j < this.maze.get(this.maze.size() - 1).size() - 1; j++) {
       Posn p = new Posn(rightindex, j);
-      this.edges.add(
-          u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(rightindex, j - 1)))); // top
-      this.edges.add(
-          u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(rightindex, j + 1)))); // bottom
-      this.edges.add(
-          u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(rightindex - 1, j)))); // left
+      this.edges.add(u.getValue(this.maze, p).
+          connect(u.getValue(this.maze, new Posn(rightindex, j - 1)))); // top
+      this.edges.add(u.getValue(this.maze, p)
+          .connect(u.getValue(this.maze, new Posn(rightindex, j + 1)))); // bottom
+      this.edges.add(u.getValue(this.maze, p)
+          .connect(u.getValue(this.maze, new Posn(rightindex - 1, j)))); // left
     }
 
     // Edges for the top border
     for (int i = 1; i < this.maze.get(this.maze.size() - 1).size() - 1; i++) {
       Posn p = new Posn(i, 0);
-      this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i + 1, 0)))); // right
-      this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i - 1, 0)))); // left
-      this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i, 1)))); // bottom
+      this.edges.add(u.getValue(this.maze, p)
+          .connect(u.getValue(this.maze, new Posn(i + 1, 0)))); // right
+      this.edges.add(u.getValue(this.maze, p)
+          .connect(u.getValue(this.maze, new Posn(i - 1, 0)))); // left
+      this.edges.add(u.getValue(this.maze, p)
+          .connect(u.getValue(this.maze, new Posn(i, 1)))); // bottom
     }
 
     // Edges for the bottom border
     for (int i = 1; i < this.maze.get(this.maze.size() - 1).size() - 1; i++) {
       Posn p = new Posn(i, bottomindex);
       this.edges.add(
-          u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i + 1, bottomindex)))); // right
+          u.getValue(this.maze, p)
+          .connect(u.getValue(this.maze, new Posn(i + 1, bottomindex)))); // right
       this.edges.add(
-          u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i - 1, bottomindex)))); // left
+          u.getValue(this.maze, p)
+          .connect(u.getValue(this.maze, new Posn(i - 1, bottomindex)))); // left
       this.edges.add(
-          u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i, bottomindex - 1)))); // top
+          u.getValue(this.maze, p)
+          .connect(u.getValue(this.maze, new Posn(i, bottomindex - 1)))); // top
     }
 
     // Edges for the rest of the array
     for (int i = 1; i < this.maze.size() - 1; i++) {
       for (int j = 1; j < this.maze.get(0).size() - 1; j++) {
         Posn p = new Posn(i, j);
-        this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i, j - 1)))); // top
-        this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i, j + 1)))); // bottom
-        this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i + 1, j)))); // right
-        this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i - 1, j)))); // left
+        this.edges.add(u.getValue(this.maze, p)
+            .connect(u.getValue(this.maze, new Posn(i, j - 1)))); // top
+        this.edges.add(u.getValue(this.maze, p)
+            .connect(u.getValue(this.maze, new Posn(i, j + 1)))); // bottom
+        this.edges.add(u.getValue(this.maze, p)
+            .connect(u.getValue(this.maze, new Posn(i + 1, j)))); // right
+        this.edges.add(u.getValue(this.maze, p)
+            .connect(u.getValue(this.maze, new Posn(i - 1, j)))); // left
       }
     }
 
@@ -169,7 +190,7 @@ class MazeWorld extends World {
     this.hash = tempHash;
   }
 
-  void KruskalsAlg() {
+  void kruskalsAlg() {
     HashMap<Posn, Node> base = this.hash;
     ArrayList<Edge> edges = this.edges;
     ArrayList<Edge> span = new ArrayList<Edge>(0);
