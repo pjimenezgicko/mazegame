@@ -1,3 +1,10 @@
+import java.awt.Color;
+
+import javalib.worldimages.LineImage;
+import javalib.worldimages.OutlineMode;
+import javalib.worldimages.OverlayImage;
+import javalib.worldimages.RectangleImage;
+import javalib.worldimages.WorldImage;
 
 class Edge {
   int weight;
@@ -10,8 +17,7 @@ class Edge {
     this.from = from;
   }
   
-  /*public WorldImage drawAt(WorldImage background) {
-    return new OverlayImage(new RectangleImage(ForbiddenIslandWorld.CELL_SIZE,
-        ForbiddenIslandWorld.CELL_SIZE, OutlineMode.SOLID, this.getColor()), background); 
-  }*/
+  public WorldImage drawAt(WorldImage background, MazeWorld world) {
+    return new LineImage(new Posn(this.to.xy.x, this.to.xy.y), Color.BLACK); 
+  }
 }

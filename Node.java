@@ -23,18 +23,28 @@ class Node {
   // return the edge that connects these two nodes
   public Edge connect(Node to) {
     Utils<Node> u = new Utils<Node>();
-    Edge e = new Edge(u.random(), this, to);
-    this.outEdges.add(e);
-    to.outEdges.add(e);
-    return e;
+    int weight = u.random();
+    Edge e1 = new Edge(weight, to, this);
+    Edge e2 = new Edge(weight, this, to);
+    this.outEdges.add(e1);
+    to.outEdges.add(e2);
+    return e1;
   }
   
-  public WorldImage drawAt(WorldImage background) {
-    return new OverlayImage(new RectangleImage(MazeWorld.MAZE_SIZE,
-        MazeWorld.NODE_SIZE, OutlineMode.SOLID, this.getColor() ), background);
+  public WorldImage drawAt(WorldImage background, MazeWorld world) {
+    return new OverlayImage(new RectangleImage(world.size,
+        MazeWorld.NODE_SIZE, OutlineMode.SOLID, this.getColor(world) ), background);
   }
   
-  private Color getColor() {
-    return Color.LIGHT_GRAY;
+  public Color getColor(MazeWorld world) {
+    if(x == 0 && y == 0) {
+      return Color.GREEN;
+    }
+    if (x == world.size - 1 && y == world.size -1) {
+      return Color.MAGENTA;
+    }
+    else {
+      return Color.GRAY;
+    }
   }
 }
