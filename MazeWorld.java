@@ -214,7 +214,9 @@ class MazeWorld extends World{
         isSpan = true;
       }
     }
-    this.edges = span;
+    for(Edge e : span) {
+      this.edges.remove(e);
+    }
   }
   
   void union(Node a, Node b, HashMap<Posn, Node> base) {
