@@ -18,6 +18,6 @@ class Edge {
   }
   
   public WorldImage drawAt(WorldImage background, MazeWorld world) {
-    return new LineImage(new Posn(this.to.xy.x, this.to.xy.y), Color.BLACK); 
+    return new LineImage(this.from.xy, Color.BLACK); 
   }
 }

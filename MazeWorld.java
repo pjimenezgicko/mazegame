@@ -11,7 +11,9 @@ import javalib.worldimages.*;
 class MazeWorld extends World{
 
   // Size of the maze 
-  int size; 
+  int height;
+  
+  int width;
 
   // Size of node
   static final int NODE_SIZE = 25;
@@ -32,15 +34,16 @@ class MazeWorld extends World{
   // image for the game
   WorldImage image = new EmptyImage();
   // temp for testing
-  WorldScene scene = new WorldScene(this.size * 100, this.size * 100);
+  WorldScene scene = new WorldScene(this.height * 100, this.width * 100);
   
   // allows for variable sized mazes for testing
-  MazeWorld(int size) {
-    this.size = size;
+  MazeWorld(int height, int width) {
+    this.height = height;
+    this.width = width;
   }
 
   public WorldScene makeScene() {
-    WorldScene w = new WorldScene(this.size* 100, this.size * 100);
+    WorldScene w = new WorldScene(this.height* 100, this.width * 100);
     int node = MazeWorld.NODE_SIZE;
     // Render the Cells
     for (Node n : this.maze2) {
@@ -53,10 +56,10 @@ class MazeWorld extends World{
 
   // Init empty maze arraylist
   void initEmptyMaze() {
-    this.maze = new ArrayList<ArrayList<Node>>(this.size);
-    for (int i = 0; i < this.size; i++) {
-      ArrayList<Node> temp = new ArrayList<Node>(this.size);
-      for (int j = 0; j < this.size; j++) {
+    this.maze = new ArrayList<ArrayList<Node>>(this.height);
+    for (int i = 0; i < this.height; i++) {
+      ArrayList<Node> temp = new ArrayList<Node>(this.width);
+      for (int j = 0; j < this.width; j++) {
         temp.add(j, new Node(new Posn(i, j)));
       }
       this.maze.add(i, temp);
@@ -162,30 +165,60 @@ class MazeWorld extends World{
     edges.sort(new SortWeight());
     boolean isSpan = false;
     
-    int edgeSize = edges.size() - 1;
-    Edge temp = edges.get(edgeSize);
+    Edge temp = edges.get(0);
     span.add(temp);
     base.put(temp.to.xy, temp.from);
-    edges.remove(edgeSize);
-    edgeSize--;
-
+    edges.remove(0);
+    /*
+    HashMap<String, String> representatives;
+    List<Edge> edgesInTree;
+    List<Edge> worklist = all edges in graph, sorted by edge weights;
+ 
+    initialize every node's representative to itself
+    While(there's more than one tree)
+      Pick the next cheapest edge of the graph: suppose it connects X and Y.
+      If find(representatives, X) equals find(representatives, Y):
+        discard this edge  // they're already connected
+      Else:
+        Record this edge in edgesInTree
+        union(representatives,
+            find(representatives, X),
+            find(representatives, Y))
+    Return the edgesInTree
+    */
+    Node a;
+    Node b;
+    
+    Posn apos;
+    Posn bpos;
     while(!isSpan) {
-      temp = edges.get(edgeSize);
+      temp = edges.get(0);
+      a = temp.to;
+      apos = a.xy;
+      b = temp.from;
+      bpos = b.xy;
+
       // Find shortest edge and check if it creates a cycle
-      if(base.get(temp.to.xy).xy.isEqual(base.get(temp.from.xy).xy)) {
-        edges.remove(edgeSize);
-        edgeSize--;
+      // If it doesn't create cycle, 
+      if(!(base.get(apos).xy.equals((base.get(bpos).xy)))) {
+        union(a, b, base); 
       }
-      else {
-        base.put(temp.to.xy, temp.from);
-        edges.remove(edgeSize);
-        edgeSize--;
-      }
+      edges.remove(0);
       
       // Check if spanning tree is spanning
       if(span.size() == this.maze2.size() - 1) {
         isSpan = true;
       }
+    }
+    this.edges = span;
+  }
+  
+  void union(Node a, Node b, HashMap<Posn, Node> base) {
+    if(base.get(a.xy).xy.equals(a.xy)) {
+      base.put(a.xy, b);
+    }
+    else {
+      union(base.get(a.xy), b, base);
     }
   }
 }
@@ -219,13 +252,13 @@ class ExamplesMaze {
   
   // set up the test conditions for a 64x64 maze
   void initTest64() {
-   ex1 = new MazeWorld(64); 
+   ex1 = new MazeWorld(64, 64); 
    ex1.initEmptyMaze();
   }
   
   // set up the test conditions for a 3x3 maze
   void initTest3() {
-    ex1 = new MazeWorld(3);
+    ex1 = new MazeWorld(3, 3);
     ex1.initEmptyMaze();
   }
   // test making the empty maze 
@@ -281,15 +314,7 @@ class ExamplesMaze {
   
   // draw at 
   
-  // test is Equal in the Posn class
-  void testIsEqual(Tester t) {
-    Posn p1 = new Posn(0,0); 
-    Posn p2 = new Posn(1, 0); 
-    Posn p3 = new Posn(1, 0);
-    
-    t.checkExpect(p1.isEqual(p2), false);
-    t.checkExpect(p2.isEqual(p3), true);
-  }
+
   
   // Test get Color 
   void testGetColor(Tester t) {
@@ -298,11 +323,16 @@ class ExamplesMaze {
     t.checkExpect(n.getColor(ex1), Color.GREEN);
   }
   
+  void testKruskalAlg(Tester t) {
+    this.initTest();
+    
+  }
+  
   // Test the rendering 
   void testRender(Tester t) {
-    ex1 = new MazeWorld(25); 
+    ex1 = new MazeWorld(25, 25); 
     ex1.initEmptyMaze();
-    ex1.bigBang(ex1.size * MazeWorld.NODE_SIZE,
-        ex1.size * MazeWorld.NODE_SIZE, .5);
+    ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE,
+        ex1.width * MazeWorld.NODE_SIZE, .5);
   }
 }
