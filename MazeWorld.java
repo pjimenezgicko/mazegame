@@ -342,6 +342,7 @@ class ExamplesMaze {
   void testRender(Tester t) {
     ex1 = new MazeWorld(25, 25); 
     ex1.initEmptyMaze();
+    ex1.KruskalsAlg();
     ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE,
         ex1.width * MazeWorld.NODE_SIZE, .5);
   }
