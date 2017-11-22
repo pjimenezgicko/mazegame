@@ -193,7 +193,6 @@ class MazeWorld extends World {
     HashMap<Node, Node> base = new HashMap<Node, Node>();
     for (Node n : this.maze2) {
       base.put(n, n);
-//      System.out.println(n.x + "--" + n.y);
     }
     ArrayList<Edge> span = new ArrayList<Edge>(0);
     edges.sort(new SortWeight());
@@ -383,7 +382,6 @@ class ExamplesMaze {
   void testRender(Tester t) {
     ex1 = new MazeWorld(25, 25);
     ex1.initEmptyMaze();
-    ex1.KruskalsAlg();
     ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE,
         ex1.width * MazeWorld.NODE_SIZE, .5);
   }
