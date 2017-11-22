@@ -59,24 +59,23 @@ class MazeWorld extends World {
     
     // draw the inner walls
     for (Edge e : this.edges) {
-     if(e.to.x < e.from.x) {
-      w.placeImageXY(new LineImage(new Posn(0, node), Color.YELLOW).movePinhole(0, -node),
+     if(e.to.x > e.from.x) {
+      w.placeImageXY(new LineImage(new Posn(0, node), Color.LIGHT_GRAY).movePinhole(0, -node),
           e.to.x * node, e.to.y * node - node / 2); // side
      }
-     else if (e.to.x > e.from.x) {
-       w.placeImageXY(new LineImage(new Posn(0, node), Color.YELLOW).movePinhole(0, -node),
-           e.to.x * node, e.to.y * node - node / 2); // side
+     else if (e.to.x < e.from.x) {
+       w.placeImageXY(new LineImage(new Posn(0, node), Color.LIGHT_GRAY).movePinhole(-node, -node),
+          e.to.x * node, e.to.y * node - node / 2); // side
       }
-     if(e.to.y < e.from.y) {
-       w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK), e.to.x * node + node / 2,
-          e.to.y * node); // bottom
+     if(e.to.y > e.from.y) {
+       w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK).movePinhole(0, -node),
+          e.to.x * node + node / 2, e.from.y * node); // bottom
       }
-     else if(e.to.y > e.from.y) {
-       w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK), e.to.x * node + node / 2,
-          e.to.y * node); // bottom
+     else if(e.to.y < e.from.y) {
+       w.placeImageXY(new LineImage(new Posn(node, 0), Color.WHITE).movePinhole(0, -node),
+          e.to.x * node + node / 2, e.to.y * node); // bottom
       }
     }
-
     return w;
   }
 
@@ -216,7 +215,6 @@ class MazeWorld extends World {
     boolean isSpan = false;
 
     Edge temp = edges.get(0);
-    span.add(temp);
     base.put(baseRep(temp.to, base), baseRep(temp.from, base));
     /*
     HashMap<String, String> representatives;
@@ -249,6 +247,8 @@ class MazeWorld extends World {
       if(baseRep(a, base) != (baseRep(b, base))) {
         base.put(baseRep(a, base), baseRep(b, base));
         // Add edge to spanning tree
+      }
+      else {
         span.add(temp);
       }
       
@@ -263,15 +263,15 @@ class MazeWorld extends World {
       System.out.println(span.size() + "another" + i );
     }
     
-    //this.edges = span;
+    this.edges = span;
     // Remove spanning tree edges from master list of edges
-    ArrayList<Edge> tempArr = new ArrayList<Edge>(0);
-    for(Edge e : edges) {
-      if(!span.contains(e)) {
-        tempArr.add(e);
-      }
-    }
-    this.edges = tempArr;
+//    ArrayList<Edge> tempArr = new ArrayList<Edge>(0);
+//    for(Edge e : edges) {
+//      if(!span.contains(e)) {
+//        tempArr.add(e);
+//      }
+//    }
+//    this.edges = tempArr;
   }
 
   Node baseRep(Node a, HashMap<Node, Node> base) {
