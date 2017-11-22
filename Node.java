@@ -28,21 +28,29 @@ class Node {
     return e1;
   }
 
+  // create image of tile
   public WorldImage drawAt(WorldImage background, MazeWorld world) {
     return new OverlayOffsetImage(
-        new RectangleImage(MazeWorld.NODE_SIZE, MazeWorld.NODE_SIZE, OutlineMode.SOLID,
+        new RectangleImage(MazeWorld.NODE_SIZE,
+            MazeWorld.NODE_SIZE,
+            OutlineMode.SOLID,
             this.getColor(world)),
-        -2.5 * MazeWorld.NODE_SIZE + world.width, -2.5 * MazeWorld.NODE_SIZE + world.height,
+        -2.5 * MazeWorld.NODE_SIZE + world.width,
+        -2.5 * MazeWorld.NODE_SIZE + world.height,
         background);
   }
 
+  // get color of nodes based on location
   public Color getColor(MazeWorld world) {
+    // top left
     if (x == 0 && y == 0) {
       return Color.GREEN;
     }
+    // bottom right
     if (x == world.height - 1 && y == world.width - 1) {
       return Color.MAGENTA;
-    }
+    } 
+    // everywhere else
     else {
       return Color.LIGHT_GRAY;
     }
