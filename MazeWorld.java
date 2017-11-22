@@ -60,16 +60,16 @@ class MazeWorld extends World {
     // draw the inner walls
     for (Edge e : this.edges) {
      if(e.to.x > e.from.x) {
-      w.placeImageXY(new LineImage(new Posn(0, node), Color.LIGHT_GRAY).movePinhole(0, -node),
+      w.placeImageXY(new LineImage(new Posn(0, node), Color.GREEN).movePinhole(0, -node),
           e.to.x * node, e.to.y * node - node / 2); // side
      }
      else if (e.to.x < e.from.x) {
-       w.placeImageXY(new LineImage(new Posn(0, node), Color.LIGHT_GRAY).movePinhole(-node, -node),
+       w.placeImageXY(new LineImage(new Posn(0, node), Color.RED).movePinhole(-node, -node),
           e.to.x * node, e.to.y * node - node / 2); // side
       }
      if(e.to.y > e.from.y) {
-       w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK).movePinhole(0, -node),
-          e.to.x * node + node / 2, e.from.y * node); // bottom
+       w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK).movePinhole(0, 0),
+          e.to.x * node + node / 2, e.to.y * node); // bottom
       }
      else if(e.to.y < e.from.y) {
        w.placeImageXY(new LineImage(new Posn(node, 0), Color.WHITE).movePinhole(0, -node),
@@ -395,7 +395,7 @@ class ExamplesMaze {
     ex1 = new MazeWorld(25, 25);
     ex1.initEmptyMaze();
     ex1.KruskalsAlg();
-    ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE,
-        ex1.width * MazeWorld.NODE_SIZE, .5);
+    ex1.bigBang(ex1.height *2* MazeWorld.NODE_SIZE,
+        ex1.width *2* MazeWorld.NODE_SIZE, .5);
   }
 }
