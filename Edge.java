@@ -14,6 +14,7 @@ class Edge {
     this.from = from;
   }
 
+  // Draw the line image
   public WorldImage drawAt(WorldImage background, MazeWorld world) {
     return new LineImage(this.from.xy, Color.BLACK);
   }
