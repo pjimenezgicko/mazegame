@@ -16,7 +16,7 @@ class MazeWorld extends World {
   int width;
 
   // Size of node
-  static final int NODE_SIZE = 25;
+  static final int NODE_SIZE = 30;
 
   // Range of our random numbers
   static final int RAND_RANGE = 50;
@@ -391,7 +391,7 @@ class ExamplesMaze {
 
   // Test the rendering
   void testRender(Tester t) {
-    ex1 = new MazeWorld(25, 25);
+    ex1 = new MazeWorld(32, 64);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
     ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE, ex1.width * MazeWorld.NODE_SIZE, 1);

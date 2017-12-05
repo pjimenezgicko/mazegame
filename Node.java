@@ -28,6 +28,15 @@ class Node {
     to.outEdges.add(e2);
     return e1;
   }
+  
+  // Same as connect but given weight, not random
+  public Edge connectTest(Node to, int weight) {
+    Edge e1 = new Edge(weight, to, this);
+    Edge e2 = new Edge(weight, this, to);
+    this.outEdges.add(e1);
+    to.outEdges.add(e2);
+    return e1;
+  }
 
   // create image of tile
   public WorldImage drawAt(WorldImage background, MazeWorld world) {
