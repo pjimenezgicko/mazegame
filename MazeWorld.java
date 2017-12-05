@@ -16,10 +16,10 @@ class MazeWorld extends World {
   int width;
 
   // Size of node
-  static final int NODE_SIZE = 30;
+  static final int NODE_SIZE = 25;
 
   // Range of our random numbers
-  static final int RAND_RANGE = 50;
+  static final int RAND_RANGE = 25;
 
   // Maze represented as a 2D Arraylist of Nodes
   ArrayList<ArrayList<Node>> maze;
@@ -102,6 +102,14 @@ class MazeWorld extends World {
     if (this.player.x == MazeWorld.NODE_SIZE - 1 && this.player.y == MazeWorld.NODE_SIZE - 1) {
       this.endOfWorld("YOU WIN!!!");
     }
+  }
+  
+  // Last Scene when the player wins!
+  public WorldScene lastScene(String msg) {
+    WorldScene w = new WorldScene(this.width * 100,
+        this.height * 100);
+    w.placeImageXY(new TextImage(msg, Color.RED), this.width / 2 * MazeWorld.NODE_SIZE, this.height / 2 * MazeWorld.NODE_SIZE);
+    return w;
   }
 
   // Init empty maze arraylist
@@ -391,7 +399,7 @@ class ExamplesMaze {
 
   // Test the rendering
   void testRender(Tester t) {
-    ex1 = new MazeWorld(32, 64);
+    ex1 = new MazeWorld(25, 25);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
     ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE, ex1.width * MazeWorld.NODE_SIZE, 1);
