@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.function.Predicate;
 
 import tester.*;
 import javalib.impworld.*;
@@ -25,6 +26,8 @@ class MazeWorld extends World {
   ArrayList<ArrayList<Node>> maze;
 
   ArrayList<Edge> edges = new ArrayList<Edge>();
+  
+  ArrayList<Edge> walls = new ArrayList<Edge>();
 
   HashMap<Posn, Node> hash;
 
@@ -91,7 +94,7 @@ class MazeWorld extends World {
   public void onKeyEvent(String key) {
     // handle player movement using the arrow keys
     if (key.equals("up") || key.equals("down") || key.equals("left") || key.equals("right")) {
-      this.player = this.player.movePlayer(key, this.maze2);
+      this.player = this.player.movePlayer(key, this.maze2, this.walls);
     }
   }
   
@@ -257,13 +260,30 @@ class MazeWorld extends World {
         isSpan = true;
       }
     }
-
+    
+    IPred<Edge> p = new CompareLink();
+    // also get the inverse of the edges 
+    // Ex: if we have A -> B make sure we have B -> A
+    for (Edge e1 : this.edges) {
+      for (Edge e2 : antispan) {
+        if (p.apply(e1, e2)) {
+          this.walls.add(e1);
+          this.walls.add(e2);
+        }
+      }
+    }
+    System.out.println(walls.size());
+    System.out.println(antispan.size());
     // set edges to the antispanning tree
     this.edges = antispan;
+
     // remove the edges where walls are
     for (Node n : this.maze2) {
-      n.outEdges.removeAll(antispan);
+      n.outEdges.removeAll(this.walls);   
     }
+    
+
+
   }
 
   // same as find function for kruskals
@@ -275,6 +295,15 @@ class MazeWorld extends World {
       return baseRep(base.get(a), base);
     }
   }
+}
+
+class CompareLink implements IPred<Edge> {
+
+  // do this edges connect the same nodes? 
+  public boolean apply(Edge t1, Edge t2) {
+    return t1.connects(t2.from, t2.to);
+  }
+  
 }
 
 class SortWeight implements Comparator<Edge> {
@@ -415,6 +444,21 @@ class ExamplesMaze {
     t.checkExpect(n1.hasEdge(n1), false);
     
   }
+  
+  // test the CompareLink IPred
+  void testCompareLink(Tester t) {
+    IPred<Edge> p = new CompareLink();
+    Posn posn = new Posn(0,0);
+    Node n1 = new Node(posn);
+    Node n2 = new Node(posn);
+    Node n3 = new Node(posn);
+    Edge e = new Edge(1, n1,n2);
+    Edge e1 = new Edge(10, n2, n1);
+    Edge e2 = new Edge(10, n3, n3);
+    t.checkExpect(p.apply(e, e1), true);
+    t.checkExpect(p.apply(e, e2), false);
+    
+  }
  
   
   // Test the player movement
@@ -422,16 +466,16 @@ class ExamplesMaze {
     this.initTest3();
     Posn origin = new Posn(0,0);
     Player p = ex1.player;
-    p = p.movePlayer("up", ex1.maze2);
+    p = p.movePlayer("up", ex1.maze2, ex1.walls);
     t.checkExpect(p.x, origin.x);
     t.checkExpect(p.y, origin.y); // can't go up from origin
-    p = p.movePlayer("down", ex1.maze2);
+    p = p.movePlayer("down", ex1.maze2, ex1.walls);
     t.checkExpect(p.x, origin.x);
     t.checkExpect(p.y, origin.y + 1);
-    p = p.movePlayer("left", ex1.maze2); // can't go left from origin
+    p = p.movePlayer("left", ex1.maze2, ex1.walls); // can't go left from origin
     t.checkExpect(p.x, origin.x);
     t.checkExpect(p.y, origin.y + 1);
-    p = p.movePlayer("right", ex1.maze2);
+    p = p.movePlayer("right", ex1.maze2, ex1.walls);
     t.checkExpect(p.x, origin.x + 1);
     t.checkExpect(p.y, origin.y + 1);
   } 

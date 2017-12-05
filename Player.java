@@ -31,7 +31,7 @@ class Player {
 
   // move this player in the given direction
   // Effect: update the current node as visited
-  public Player movePlayer(String direction, ArrayList<Node> maze) {
+  public Player movePlayer(String direction, ArrayList<Node> maze, ArrayList<Edge> walls) {
 
     int speed = 1;
     Posn target;
@@ -61,13 +61,16 @@ class Player {
       }      
     }
     
-    // if there is an edge between this node and the desired position move us there 
-    if (this.node.hasEdge(goTo)) {
-      this.node.visited = true;
-      return new Player(goTo);
+    // if there is a wall between this node and the desired position we cannot
+    // go there, so return this
+    for (Edge e : walls){
+      if (e.connects(this.node, goTo)) {
+        return this;
+      }
     }
-    
-    // else there is a wall between us and we can't move there, so don't
-    return this;
+    // there are no walls blocking our way, move us there
+    this.node.visited = true;
+    return new Player(goTo);
+
   }
 }
