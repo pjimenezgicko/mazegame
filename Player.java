@@ -1,7 +1,6 @@
 import java.awt.Color;
 import java.util.ArrayList;
 
-import javalib.worldimages.CircleImage;
 import javalib.worldimages.OutlineMode;
 import javalib.worldimages.OverlayImage;
 import javalib.worldimages.Posn;
@@ -68,6 +67,7 @@ class Player {
       return new Player(goTo);
     }
     
+    // else there is a wall between us and we can't move there, so don't
     return this;
   }
 }

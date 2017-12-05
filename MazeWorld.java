@@ -51,7 +51,6 @@ class MazeWorld extends World {
     // Render the Cells
     for (Node n : this.maze2) {
       w.placeImageXY(n.drawAt(this.image, this), n.x * node, n.y * node);
-      w.placeImageXY(new CircleImage(1, OutlineMode.SOLID, Color.RED), n.x * node, n.y * node);
     }
 
     // draw the top border
@@ -261,6 +260,10 @@ class MazeWorld extends World {
 
     // set edges to the antispanning tree
     this.edges = antispan;
+    // remove the edges where walls are
+    for (Node n : this.maze2) {
+      n.outEdges.removeAll(antispan);
+    }
   }
 
   // same as find function for kruskals
@@ -421,16 +424,16 @@ class ExamplesMaze {
     Player p = ex1.player;
     p = p.movePlayer("up", ex1.maze2);
     t.checkExpect(p.x, origin.x);
-    t.checkExpect(p.y, origin.y - 1);
+    t.checkExpect(p.y, origin.y); // can't go up from origin
     p = p.movePlayer("down", ex1.maze2);
     t.checkExpect(p.x, origin.x);
-    t.checkExpect(p.y, origin.y);
-    p = p.movePlayer("left", ex1.maze2);
-    t.checkExpect(p.x, origin.x - 1);
-    t.checkExpect(p.y, origin.y);
-    p = p.movePlayer("right", ex1.maze2);
+    t.checkExpect(p.y, origin.y + 1);
+    p = p.movePlayer("left", ex1.maze2); // can't go left from origin
     t.checkExpect(p.x, origin.x);
-    t.checkExpect(p.y, origin.y);
+    t.checkExpect(p.y, origin.y + 1);
+    p = p.movePlayer("right", ex1.maze2);
+    t.checkExpect(p.x, origin.x + 1);
+    t.checkExpect(p.y, origin.y + 1);
   } 
 
   // Test the rendering
