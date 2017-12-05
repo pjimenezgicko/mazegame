@@ -19,7 +19,7 @@ class MazeWorld extends World {
   static final int NODE_SIZE = 30;
 
   // Range of our random numbers
-  static final int RAND_RANGE = 20;
+  static final int RAND_RANGE = 50;
 
   // Maze represented as a 2D Arraylist of Nodes
   ArrayList<ArrayList<Node>> maze;
@@ -51,32 +51,33 @@ class MazeWorld extends World {
       w.placeImageXY(new CircleImage(1, OutlineMode.SOLID, Color.RED), n.x * node, n.y * node);
     }
 
+    // draw the top border
+    w.placeImageXY(new LineImage(new Posn(node * this.width, 0), Color.BLACK)
+        .movePinhole(-(node * this.width) / 2,0), 0, 0);
+
+    // draw the left border
+    w.placeImageXY(new LineImage(new Posn(0, -node * this.height), Color.BLACK)
+        .movePinhole(0, -(node * this.height) / 2 + 1), 0, 0);
+    
     // draw the bottom border
-    w.placeImageXY(new LineImage(new Posn(node*this.width, 0), Color.BLACK).movePinhole(-(node*this.width)/2, -(node*this.height) + 1), 0, 0);
-    
+    w.placeImageXY(new LineImage(new Posn(node * this.width, 0), Color.BLACK)
+        .movePinhole(-(node * this.width) / 2, -(node * this.height) + 1), 0, 0);
+
     // draw the right border
-    w.placeImageXY(new LineImage(new Posn(0, -node*this.height), Color.BLACK).movePinhole(-(node*this.width) + 1, -(node*this.height)/2 + 1), 0, 0);
-    
+    w.placeImageXY(new LineImage(new Posn(0, -node * this.height), Color.BLACK)
+        .movePinhole(-(node * this.width) + 1, -(node * this.height) / 2 + 1), 0, 0);
+
     // draw the inner walls
     for (Edge e : this.edges) {
-     if(e.to.x < e.from.x) {
-      w.placeImageXY(new LineImage(new Posn(0, node), Color.YELLOW).movePinhole(0, -node),
-          e.to.x * node, e.to.y * node - node / 2); // side
-     }
-     else if (e.to.x > e.from.x) {
-       w.placeImageXY(new LineImage(new Posn(0, node), Color.YELLOW).movePinhole(0, -node),
-           e.to.x * node, e.to.y * node - node / 2); // side
+      if (e.to.x < e.from.x) {
+        w.placeImageXY(new LineImage(new Posn(0, node), Color.BLACK).movePinhole(-node, -node),
+            e.to.x * node, e.to.y * node - node / 2); // side
       }
-     if(e.to.y < e.from.y) {
-       w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK), e.to.x * node + node / 2,
-          e.to.y * node); // bottom
-      }
-     else if(e.to.y > e.from.y) {
-       w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK), e.to.x * node + node / 2,
-          e.to.y * node); // bottom
+      if (e.to.y > e.from.y) {
+        w.placeImageXY(new LineImage(new Posn(node, 0), Color.BLACK).movePinhole(0, 0),
+            e.to.x * node + node / 2, e.to.y * node); // bottom
       }
     }
-
     return w;
   }
 
@@ -97,59 +98,45 @@ class MazeWorld extends World {
   // EFFECT: Create edges for the maze
   void initEdges() {
     Utils<Node> u = new Utils<Node>();
+    int rightindex = this.maze.size() - 1;
+    int bottomindex = this.maze.get(this.maze.size() - 1).size() - 1;
+    
     // Edges for the top left corner
-    this.edges
-        .add(u.getValue(this.maze, new Posn(0, 0)).connect(u.getValue(this.maze, new Posn(1, 0))));
     this.edges
         .add(u.getValue(this.maze, new Posn(0, 0)).connect(u.getValue(this.maze, new Posn(0, 1))));
 
     // Edges for the top right corner
-    int rightindex = this.maze.size() - 1;
     this.edges.add(u.getValue(this.maze, new Posn(rightindex, 0))
         .connect(u.getValue(this.maze, new Posn(rightindex - 1, 0))));
     this.edges.add(u.getValue(this.maze, new Posn(rightindex, 0))
         .connect(u.getValue(this.maze, new Posn(rightindex, 1))));
-
-    // Edges for bottom left corner
-    int bottomindex = this.maze.get(this.maze.size() - 1).size() - 1;
-    this.edges.add(u.getValue(this.maze, new Posn(0, bottomindex))
-        .connect(u.getValue(this.maze, new Posn(1, bottomindex))));
-    this.edges.add(u.getValue(this.maze, new Posn(0, bottomindex))
-        .connect(u.getValue(this.maze, new Posn(0, bottomindex - 1))));
-
+    
     // Edges for the bottom right corner
     this.edges.add(u.getValue(this.maze, new Posn(rightindex, bottomindex))
         .connect(u.getValue(this.maze, new Posn(rightindex - 1, bottomindex))));
-    this.edges.add(u.getValue(this.maze, new Posn(rightindex, bottomindex))
-        .connect(u.getValue(this.maze, new Posn(rightindex, bottomindex - 1))));
 
     // Edges for the left border
     for (int j = 1; j < this.maze.get(0).size() - 1; j++) {
       Posn p = new Posn(0, j);
-      this.edges.add(u.getValue(this.maze, p)
-          .connect(u.getValue(this.maze, new Posn(0, j - 1)))); // top
-      this.edges.add(u.getValue(this.maze, p)
-          .connect(u.getValue(this.maze, new Posn(0, j + 1)))); // bottom
-      this.edges.add(u.getValue(this.maze, p)
-          .connect(u.getValue(this.maze, new Posn(1, j)))); // right
+      this.edges.add(u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(0, j + 1))));
+      // bottom
+      
     }
 
     // Edges for the right border
     for (int j = 1; j < this.maze.get(this.maze.size() - 1).size() - 1; j++) {
       Posn p = new Posn(rightindex, j);
-      this.edges.add(u.getValue(this.maze, p).
-          connect(u.getValue(this.maze, new Posn(rightindex, j - 1)))); // top
-      this.edges.add(u.getValue(this.maze, p)
-          .connect(u.getValue(this.maze, new Posn(rightindex, j + 1)))); // bottom
-      this.edges.add(u.getValue(this.maze, p)
-          .connect(u.getValue(this.maze, new Posn(rightindex - 1, j)))); // left
+      this.edges.add(
+          u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(rightindex, j + 1))));
+      // bottom
+      this.edges.add(
+          u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(rightindex - 1, j))));
+      // left
     }
 
     // Edges for the top border
     for (int i = 1; i < this.maze.get(this.maze.size() - 1).size() - 1; i++) {
       Posn p = new Posn(i, 0);
-      this.edges.add(u.getValue(this.maze, p)
-          .connect(u.getValue(this.maze, new Posn(i + 1, 0)))); // right
       this.edges.add(u.getValue(this.maze, p)
           .connect(u.getValue(this.maze, new Posn(i - 1, 0)))); // left
       this.edges.add(u.getValue(this.maze, p)
@@ -160,26 +147,18 @@ class MazeWorld extends World {
     for (int i = 1; i < this.maze.get(this.maze.size() - 1).size() - 1; i++) {
       Posn p = new Posn(i, bottomindex);
       this.edges.add(
-          u.getValue(this.maze, p)
-          .connect(u.getValue(this.maze, new Posn(i + 1, bottomindex)))); // right
-      this.edges.add(
-          u.getValue(this.maze, p)
-          .connect(u.getValue(this.maze, new Posn(i - 1, bottomindex)))); // left
-      this.edges.add(
-          u.getValue(this.maze, p)
-          .connect(u.getValue(this.maze, new Posn(i, bottomindex - 1)))); // top
+          u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i - 1, bottomindex))));
     }
 
     // Edges for the rest of the array
     for (int i = 1; i < this.maze.size() - 1; i++) {
       for (int j = 1; j < this.maze.get(0).size() - 1; j++) {
         Posn p = new Posn(i, j);
+
         this.edges.add(u.getValue(this.maze, p)
-            .connect(u.getValue(this.maze, new Posn(i, j - 1)))); // top
-        this.edges.add(u.getValue(this.maze, p)
-            .connect(u.getValue(this.maze, new Posn(i, j + 1)))); // bottom
-        this.edges.add(u.getValue(this.maze, p)
-            .connect(u.getValue(this.maze, new Posn(i + 1, j)))); // right
+            .connect(u.getValue(this.maze, new Posn(i, j + 1))));
+        // bottom
+        
         this.edges.add(u.getValue(this.maze, p)
             .connect(u.getValue(this.maze, new Posn(i - 1, j)))); // left
       }
@@ -202,82 +181,62 @@ class MazeWorld extends World {
     this.hash = tempHash;
   }
 
-  void KruskalsAlg() {
+  // Kruskal's algorithm
+  // PS i keep track of everything but the spanning tree so i dont have to invert later
+  void kruskalsAlg() {
     HashMap<Node, Node> base = new HashMap<Node, Node>();
     for (Node n : this.maze2) {
       base.put(n, n);
-//      System.out.println(n.x + "--" + n.y);
     }
-    ArrayList<Edge> span = new ArrayList<Edge>(0);
+    ArrayList<Edge> antispan = new ArrayList<Edge>(0);
+    // Sort edges
     edges.sort(new SortWeight());
-    for(Edge e : edges) {
-      System.out.println(e.weight);
-    }
-    boolean isSpan = false;
-
-    Edge temp = edges.get(0);
-    span.add(temp);
-    base.put(baseRep(temp.to, base), baseRep(temp.from, base));
-    /*
-    HashMap<String, String> representatives;
-    List<Edge> edgesInTree;
-    List<Edge> worklist = all edges in graph, sorted by edge weights;
- 
-    initialize every node's representative to itself
-    While(there's more than one tree)
-      Pick the next cheapest edge of the graph: suppose it connects X and Y.
-      If find(representatives, X) equals find(representatives, Y):
-        discard this edge  // they're already connected
-      Else:
-        Record this edge in edgesInTree
-        union(representatives,
-            find(representatives, X),
-            find(representatives, Y))
-    Return the edgesInTree
-    */
     
+
+    // Get first edge and put it in hashtable
+    Edge temp = edges.get(0);
+    base.put(baseRep(temp.to, base), baseRep(temp.from, base));
+
+    // Initilize locals
     Node a;
     Node b;
     int i = 1;
+    boolean isSpan = false;
+    
     while (!isSpan) {
+      // Get current edge from edges
       temp = edges.get(i);
       a = temp.to;
       b = temp.from;
 
       // Find shortest edge and check if it creates a cycle
       // If it doesn't create cycle, modify hash table
-      if(baseRep(a, base) != (baseRep(b, base))) {
+      if (baseRep(a, base) != (baseRep(b, base))) {
         base.put(baseRep(a, base), baseRep(b, base));
+      } 
+      else {
         // Add edge to spanning tree
-        span.add(temp);
+        antispan.add(temp);
       }
-      
+
       // tick counter
       i++;
-      
-      // Check if spanning tree is spanning
-      if(span.size() == this.maze2.size() - 1) {
-        System.out.println(span.size() + "done" + i);
+
+      // Check if everything but antispanning tree is the required size
+      if (edges.size() - antispan.size() == this.maze2.size() - 1) {
         isSpan = true;
       }
-      System.out.println(span.size() + "another" + i );
     }
-    
-    //this.edges = span;
-    // Remove spanning tree edges from master list of edges
-    ArrayList<Edge> tempArr = new ArrayList<Edge>(0);
-    for(Edge e : edges) {
-      if(!span.contains(e)) {
-        tempArr.add(e);
-      }
-    }
-    this.edges = tempArr;
+
+    // set edges to the antispanning tree
+    this.edges = antispan;
   }
 
+  // same as find function for kruskals
   Node baseRep(Node a, HashMap<Node, Node> base) {
-    if(base.get(a) == a) {
+    if (base.get(a) == a) {
       return a;
-    }
+    } 
     else {
       return baseRep(base.get(a), base);
     }
@@ -333,9 +292,9 @@ class ExamplesMaze {
   // test Edge Creation
   void testInitEdges(Tester t) {
     this.initTest64();
-    t.checkExpect(ex1.edges.size(), 16128);
+    t.checkExpect(ex1.edges.size(), 8064);
     this.initTest3();
-    t.checkExpect(ex1.edges.size(), 24);
+    t.checkExpect(ex1.edges.size(), 12);
   }
 
   // test the getValue method
@@ -346,7 +305,8 @@ class ExamplesMaze {
     Posn p2 = new Posn(1, 3);
     ArrayList<Integer> l1 = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4));
     ArrayList<Integer> l2 = new ArrayList<Integer>(Arrays.asList(5, 6, 7, 8));
-    ArrayList<ArrayList<Integer>> matrix = new ArrayList<ArrayList<Integer>>(Arrays.asList(l1, l2));
+    ArrayList<ArrayList<Integer>> matrix = 
+        new ArrayList<ArrayList<Integer>>(Arrays.asList(l1, l2));
     t.checkExpect(u.getValue(matrix, p), 2);
     t.checkExpect(u.getValue(matrix, p2), 8);
   }
@@ -372,8 +332,6 @@ class ExamplesMaze {
     t.checkExpect(ex1.hash.get(ex1.maze2.get(6).xy), ex1.maze2.get(6));
   }
 
-  // draw at
-
   // test is Equal in the Posn class
   void testIsEqual(Tester t) {
     Posn p1 = new Posn(0, 0);
@@ -394,8 +352,7 @@ class ExamplesMaze {
   void testRender(Tester t) {
     ex1 = new MazeWorld(32, 64);
     ex1.initEmptyMaze();
-    ex1.KruskalsAlg();
-    ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE,
-        ex1.width * MazeWorld.NODE_SIZE, .5);
+    ex1.kruskalsAlg();
+    ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE, ex1.width * MazeWorld.NODE_SIZE, 0);
   }
 }
