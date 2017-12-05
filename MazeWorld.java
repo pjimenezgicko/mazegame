@@ -10,15 +10,18 @@ import javalib.worldimages.*;
 class MazeWorld extends World {
 
   // Size of the maze
-  int height;
+  int nodesTall;
 
-  int width;
+  int nodesWide;
 
   // Size of node
   static final int NODE_SIZE = 25;
 
   // Range of our random numbers
   static final int RAND_RANGE = 25;
+  
+  // Scaling factor of our maze
+  static final int SCALE = 100;
 
   // Maze represented as a 2D Arraylist of Nodes
   ArrayList<ArrayList<Node>> maze;
@@ -35,7 +38,7 @@ class MazeWorld extends World {
   // image for the game
   WorldImage image = new EmptyImage();
   // temp for testing
-  WorldScene scene = new WorldScene(this.height * 100, this.width * 100);
+  WorldScene scene = new WorldScene(this.nodesTall * SCALE, this.nodesWide * SCALE);
   
   // represent the Player
   Player player;
@@ -60,34 +63,34 @@ class MazeWorld extends World {
   boolean solveDepth = false;
   
   // allows for variable sized mazes for testing
-  MazeWorld(int height, int width) {
-    this.height = height;
-    this.width = width;
+  MazeWorld(int nodesTall, int nodesWide) {
+    this.nodesTall = nodesTall;
+    this.nodesWide = nodesWide;
   }
 
   public WorldScene makeScene() {
-    WorldScene w = new WorldScene(this.height * 100, this.width * 100);
+    WorldScene w = new WorldScene(this.nodesTall * SCALE, this.nodesWide * SCALE);
     int node = MazeWorld.NODE_SIZE;
     // Render the Cells
     for (Node n : this.maze2) {
-      w.placeImageXY(n.drawAt(this.image, this), n.x * node, n.y * node);
+      w.placeImageXY(n.drawAt(this.image, this), n.x * this.nodesWide, n.y * this.nodesTall);
     }
 
     // draw the top border
-    w.placeImageXY(new LineImage(new Posn(node * this.width, 0), Color.BLACK)
-        .movePinhole(-(node * this.width) / 2,0), 0, 0);
+    w.placeImageXY(new LineImage(new Posn(node * this.nodesWide, 0), Color.BLACK)
+        .movePinhole(-(node * this.nodesWide) / 2,0), 0, 0);
 
     // draw the left border
-    w.placeImageXY(new LineImage(new Posn(0, -node * this.height), Color.BLACK)
-        .movePinhole(0, -(node * this.height) / 2 + 1), 0, 0);
+    w.placeImageXY(new LineImage(new Posn(0, -node * this.nodesTall), Color.BLACK)
+        .movePinhole(0, -(node * this.nodesTall) / 2 + 1), 0, 0);
     
     // draw the bottom border
-    w.placeImageXY(new LineImage(new Posn(node * this.width, 0), Color.BLACK)
-        .movePinhole(-(node * this.width) / 2, -(node * this.height) + 1), 0, 0);
+    w.placeImageXY(new LineImage(new Posn(node * this.nodesWide, 0), Color.BLACK)
+        .movePinhole(-(node * this.nodesWide) / 2, -(node * this.nodesTall) + 1), 0, 0);
 
     // draw the right border
-    w.placeImageXY(new LineImage(new Posn(0, -node * this.height), Color.BLACK)
-        .movePinhole(-(node * this.width) + 1, -(node * this.height) / 2 + 1), 0, 0);
+    w.placeImageXY(new LineImage(new Posn(0, -node * this.nodesTall), Color.BLACK)
+        .movePinhole(-(node * this.nodesWide) + 1, -(node * this.nodesTall) / 2 + 1), 0, 0);
 
     // draw the inner walls
     for (Edge e : this.edges) {
@@ -128,7 +131,7 @@ class MazeWorld extends World {
   
   public void onTick() {
     // if the player is on the end node of the maze they win
-    if (this.player.x == MazeWorld.NODE_SIZE - 1 && this.player.y == MazeWorld.NODE_SIZE - 1) {
+    if (this.player.x == this.nodesWide - 1 && this.player.y == this.nodesTall - 1) {
       this.endOfWorld("YOU WIN!!!");
     }
     
@@ -169,18 +172,18 @@ class MazeWorld extends World {
   
   // Last Scene when the player wins!
   public WorldScene lastScene(String msg) {
-    WorldScene w = new WorldScene(this.width * 100,
-        this.height * 100);
-    w.placeImageXY(new TextImage(msg, Color.RED), this.width / 2 * MazeWorld.NODE_SIZE, this.height / 2 * MazeWorld.NODE_SIZE);
+    WorldScene w = new WorldScene(this.nodesWide * SCALE,
+        this.nodesTall * SCALE);
+    w.placeImageXY(new TextImage(msg, Color.RED), this.nodesWide / 2 * MazeWorld.NODE_SIZE, this.nodesTall / 2 * MazeWorld.NODE_SIZE);
     return w;
   }
 
   // Init empty maze arraylist
   void initEmptyMaze() {
-    this.maze = new ArrayList<ArrayList<Node>>(this.height);
-    for (int i = 0; i < this.height; i++) {
-      ArrayList<Node> temp = new ArrayList<Node>(this.width);
-      for (int j = 0; j < this.width; j++) {
+    this.maze = new ArrayList<ArrayList<Node>>(this.nodesTall);
+    for (int i = 0; i < this.nodesTall; i++) {
+      ArrayList<Node> temp = new ArrayList<Node>(this.nodesWide);
+      for (int j = 0; j < this.nodesWide; j++) {
         temp.add(j, new Node(new Posn(i, j)));
       }
       this.maze.add(i, temp);
@@ -608,9 +611,10 @@ class ExamplesMaze {
 
   // Test the rendering
   void testRender(Tester t) {
-    ex1 = new MazeWorld(25, 25);
+    // these inputs represent the number of nodes in the maze
+    ex1 = new MazeWorld(10, 10);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
-    ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE, ex1.width * MazeWorld.NODE_SIZE, 1);
+    ex1.bigBang(ex1.nodesTall * MazeWorld.NODE_SIZE, ex1.nodesWide * MazeWorld.NODE_SIZE, 1);
   }
 }

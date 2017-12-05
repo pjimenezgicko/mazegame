@@ -58,8 +58,8 @@ class Node {
             MazeWorld.NODE_SIZE,
             OutlineMode.SOLID,
             this.getColor(world)),
-        -2.5 * MazeWorld.NODE_SIZE + world.width,
-        -2.5 * MazeWorld.NODE_SIZE + world.height,
+        -2.5 * MazeWorld.NODE_SIZE + world.nodesWide,
+        -2.5 * MazeWorld.NODE_SIZE + world.nodesTall,
         background);
   }
 
@@ -71,7 +71,7 @@ class Node {
     }
     
     // bottom right
-    else if (x == world.height - 1 && y == world.width - 1) {
+    else if (x == world.nodesTall - 1 && y == world.nodesWide - 1) {
       return Color.MAGENTA;
     }
     
