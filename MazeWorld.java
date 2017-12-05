@@ -56,7 +56,7 @@ class MazeWorld extends World {
     int node = MazeWorld.NODE_SIZE;
     // Render the Cells
     for (Node n : this.maze2) {
-      w.placeImageXY(n.drawAt(this.image, this), n.x * this.nodesWide, n.y * this.nodesTall);
+      w.placeImageXY(n.drawAt(this.image, this), n.x * node, n.y * node);
     }
 
     // draw the top border
@@ -486,7 +486,7 @@ class ExamplesMaze {
   // Test the rendering
   void testRender(Tester t) {
     // these inputs represent the number of nodes in the maze
-    ex1 = new MazeWorld(10, 10);
+    ex1 = new MazeWorld(25, 25);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
     ex1.bigBang(ex1.nodesTall * MazeWorld.NODE_SIZE, ex1.nodesWide * MazeWorld.NODE_SIZE, 1);
