@@ -1,7 +1,6 @@
 import java.awt.Color;
 import java.util.ArrayList;
 
-import javalib.worldimages.CircleImage;
 import javalib.worldimages.OutlineMode;
 import javalib.worldimages.OverlayImage;
 import javalib.worldimages.Posn;
@@ -31,11 +30,12 @@ class Player {
   }
 
   // move this player in the given direction
-  public Player movePlayer(String direction, ArrayList<Node> maze) {
+  // Effect: update the current node as visited
+  public Player movePlayer(String direction, ArrayList<Node> maze, ArrayList<Edge> walls) {
 
     int speed = 1;
     Posn target;
-    Node goTo;
+    Node goTo = this.node; // if goTo node is still this.node at the end we won't move
 
     if (direction.equals("up")) {
       target = new Posn(this.x, this.y - speed);
@@ -61,6 +61,16 @@ class Player {
       }      
     }
     
-    return this;
+    // if there is a wall between this node and the desired position we cannot
+    // go there, so return this
+    for (Edge e : walls){
+      if (e.connects(this.node, goTo)) {
+        return this;
+      }
+    }
+    // there are no walls blocking our way, move us there
+    this.node.visited = true;
+    return new Player(goTo);
+
   }
 }
