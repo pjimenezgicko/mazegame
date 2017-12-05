@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 import tester.*;
 import javalib.impworld.*;
@@ -36,6 +33,21 @@ class MazeWorld extends World {
   // temp for testing
   WorldScene scene = new WorldScene(this.height * 100, this.width * 100);
 
+  // Starting node
+  Node start = this.maze2.get(0);
+  
+  // Ending node
+  Node end = this.maze2.get(this.maze2.size());
+    
+  ArrayList<Node> depthPath = null;
+  
+  ArrayList<Node> depthPathFull = null;
+  
+  ArrayList<Node> breadthPath = null;
+
+  ArrayList<Node> breadthPathFull = null;
+  
+    
   // allows for variable sized mazes for testing
   MazeWorld(int height, int width) {
     this.height = height;
@@ -231,7 +243,7 @@ class MazeWorld extends World {
     // set edges to the antispanning tree
     this.edges = antispan;
   }
-
+ 
   // same as find function for kruskals
   Node baseRep(Node a, HashMap<Node, Node> base) {
     if (base.get(a) == a) {
@@ -240,6 +252,73 @@ class MazeWorld extends World {
     else {
       return baseRep(base.get(a), base);
     }
+  }
+   
+  void Breadth() {
+    
+  }
+  
+  ArrayList<Node> BroadSearch(Node root) {
+        
+    this.breadthPathFull.add(root);
+    
+    ArrayList<Node> list = null;
+    list.add(root);
+
+    while (!list.isEmpty()) {
+      this.breadthPathFull.add(list.get(0));
+      if (list.get(0) == this.end) {
+        break;
+      }
+      
+      for(Edge e : list.get(0).outEdges) {
+        list.add(e.to);
+      }
+    }
+    
+    this.breadthPath = SlimPath(this.breadthPathFull);
+  }
+  
+  void Depth() {
+    DeepSearch(this.start);
+  }
+  
+  ArrayList<Node> DeepSearch(Node root) {
+    this.depthPathFull.add(root);
+    
+    if (root == this.end) {
+      ArrayList<Node> arr = null;
+      arr.add(root);
+      return arr;
+    }
+    
+    else {
+      for (Edge e : root.outEdges) {
+        ArrayList<Node> path = DeepSearch(e.to);
+        if (path != null) {
+          path.add(root);
+          return path;
+        }
+      }
+      
+      return null;
+    }
+  }
+  
+  ArrayList<Node> SlimPath(ArrayList<Node> path) {
+    Stack<Node> slimPath = null;
+    slimPath.push(this.end);
+    int sizeIdx = path.size() - 1;
+    while(slimPath.peek() != this.start) {
+      if (path.get(sizeIdx).outEdges.contains(slimPath.peek())) {
+        slimPath.push(path.remove(sizeIdx));
+      }
+      else {
+        path.remove(sizeIdx);
+        sizeIdx--;
+      }
+    }
+    return new ArrayList(slimPath);
   }
 }
 

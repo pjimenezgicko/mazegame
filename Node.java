@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.*;
 import java.awt.Color;
 import javalib.worldimages.*;
 
@@ -64,4 +64,8 @@ class Node {
       return Color.LIGHT_GRAY;
     }
   }
+  
+  //--------------------- PART 2 ---------------------------
+  
+  
 }
