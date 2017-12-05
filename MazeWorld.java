@@ -401,7 +401,14 @@ class ExamplesMaze {
   
   // test the hasEdge method in the Node Class
   void testHasEdge(Tester t) {
-    
+    Posn p = new Posn(0,0);
+    Node n1 = new Node(p);
+    Node n2 = new Node(p);
+    Node n3 = new Node(p);
+    n1.connect(n2);
+    t.checkExpect(n1.hasEdge(n2), true);
+    t.checkExpect(n1.hasEdge(n3), false);
+    t.checkExpect(n1.hasEdge(null), false);
   }
  
   /*

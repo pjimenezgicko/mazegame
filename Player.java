@@ -61,6 +61,11 @@ class Player {
       }      
     }
     
+    // if there is an edge between this node and the desired position move us there 
+    if (this.node.hasEdge(goTo)) {
+      return new Player(goTo);
+    }
+    
     return this;
   }
 }
