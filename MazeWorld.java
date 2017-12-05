@@ -3,6 +3,8 @@ import java.util.*;
 import tester.*;
 import javalib.impworld.*;
 import java.awt.Color;
+import java.awt.List;
+
 import javalib.worldimages.*;
 
 class MazeWorld extends World {
@@ -45,14 +47,18 @@ class MazeWorld extends World {
   Node end = this.maze2.get(this.maze2.size());
     
   ArrayList<Node> depthPath = null;
-  
+  int dp = -1;
   ArrayList<Node> depthPathFull = null;
-  
+  int dpf = -1;
   ArrayList<Node> breadthPath = null;
-
+  int bp = -1;
   ArrayList<Node> breadthPathFull = null;
+  int bpf = -1;
   
-    
+  // For timing the solving of the maze animation
+  boolean solveBreadth = false;
+  boolean solveDepth = false;
+  
   // allows for variable sized mazes for testing
   MazeWorld(int height, int width) {
     this.height = height;
@@ -107,12 +113,57 @@ class MazeWorld extends World {
     if (key.equals("up") || key.equals("down") || key.equals("left") || key.equals("right")) {
       this.player = this.player.movePlayer(key, this.maze2, this.walls);
     }
+    
+    if (key.equals("b")) {
+      this.solveBreadth = true;
+      this.bpf = 0;
+    }
+    
+    if (key.equals("d")) {
+      this.solveDepth = true;
+      this.dp = 0;
+      this.dpf = 0;
+    }
   }
   
   public void onTick() {
     // if the player is on the end node of the maze they win
     if (this.player.x == MazeWorld.NODE_SIZE - 1 && this.player.y == MazeWorld.NODE_SIZE - 1) {
       this.endOfWorld("YOU WIN!!!");
+    }
+    
+    if (this.bpf != -1) {
+      this.breadthPathFull.get(0).fullPath = true;
+      this.bpf++;
+      if (this.bpf == this.breadthPathFull.size()) {
+        this.bpf = -1;
+        this.bp = 0;
+      }
+    }
+    
+    if (this.bp != -1) {
+      this.breadthPath.get(0).directPath = true;
+      this.bp++;
+      if (this.bp == this.breadthPath.size()) {
+        this.bp = -1;
+      }
+    }
+    
+     if (this.dpf != -1) {
+      this.depthPathFull.get(0).fullPath = true;
+      this.dpf++;
+      if (this.dpf == this.depthPathFull.size()) {
+        this.dpf = -1;
+        this.dp = 0;
+      }
+    }
+    
+    if (this.dp != -1) {
+      this.depthPath.get(0).directPath = true;
+      this.dp++;
+      if (this.dp == this.depthPath.size()) {
+        this.dp = -1;
+      }
     }
   }
   
@@ -306,72 +357,69 @@ class MazeWorld extends World {
       return baseRep(base.get(a), base);
     }
   }
-   
-  void Breadth() {
-    
-  }
   
-  ArrayList<Node> BroadSearch(Node root) {
-        
-    this.breadthPathFull.add(root);
-    
+  void BreadthSearch(Node root) {
     ArrayList<Node> list = null;
     list.add(root);
+    root.setParent(null);
 
     while (!list.isEmpty()) {
-      this.breadthPathFull.add(list.get(0));
-      if (list.get(0) == this.end) {
+      // Choose node and remove it from front of list
+      Node node = list.get(0);
+      this.breadthPathFull.add(node);
+      list.remove(0);
+      
+      // Visit node and check it out
+      if (node == this.end) {
         break;
       }
-      
-      for(Edge e : list.get(0).outEdges) {
-        list.add(e.to);
-      }
-    }
-    
-    this.breadthPath = SlimPath(this.breadthPathFull);
-  }
-  
-  void Depth() {
-    DeepSearch(this.start);
-  }
-  
-  ArrayList<Node> DeepSearch(Node root) {
-    this.depthPathFull.add(root);
-    
-    if (root == this.end) {
-      ArrayList<Node> arr = null;
-      arr.add(root);
-      return arr;
-    }
-    
-    else {
-      for (Edge e : root.outEdges) {
-        ArrayList<Node> path = DeepSearch(e.to);
-        if (path != null) {
-          path.add(root);
-          return path;
+      // Analyze its out edges, except one it came from
+      for(Edge e : node.outEdges) {
+        if (e.to == node) {
+          e.to.setParent(node);
+          list.add(e.to);
         }
       }
-      
-      return null;
     }
+    recreatePath();
   }
   
-  ArrayList<Node> SlimPath(ArrayList<Node> path) {
-    Stack<Node> slimPath = null;
-    slimPath.push(this.end);
-    int sizeIdx = path.size() - 1;
-    while(slimPath.peek() != this.start) {
-      if (path.get(sizeIdx).outEdges.contains(slimPath.peek())) {
-        slimPath.push(path.remove(sizeIdx));
-      }
-      else {
-        path.remove(sizeIdx);
-        sizeIdx--;
+  void recreatePath() {
+    Stack<Node> stack = null;
+    
+    Node node = this.end;
+    while (node.parent != null) {
+      stack.push(node);
+      node = node.parent;
+    }
+    this.breadthPath = new ArrayList<Node>(stack);
+  }
+  
+  Node DepthSearch(Node root) {
+    if (root == this.end) {
+      this.depthPath.add(root);
+      this.depthPathFull.add(root);
+      return this.end;
+    }
+    else if (root.outEdges.isEmpty()) {
+      return null;
+    }
+    else {
+      for (Edge e : root.outEdges) {
+        this.depthPath.add(root);
+        this.depthPathFull.add(root);
+        
+        if (DepthSearch(e.to) == null) {
+          this.depthPath.remove(this.depthPath.size() - 1);
+          return null;
+        }
+        else {
+          return this.end;
+        }
       }
     }
-    return new ArrayList(slimPath);
+    // Wont do anything, eclipse is stupid and wants it here
+    return null;
   }
 }
 
