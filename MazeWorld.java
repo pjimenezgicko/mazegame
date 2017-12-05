@@ -43,7 +43,6 @@ class MazeWorld extends World {
   MazeWorld(int height, int width) {
     this.height = height;
     this.width = width;
-    this.player = new Player(new Posn(0,0));
   }
 
   public WorldScene makeScene() {
@@ -93,7 +92,7 @@ class MazeWorld extends World {
   public void onKeyEvent(String key) {
     // handle player movement using the arrow keys
     if (key.equals("up") || key.equals("down") || key.equals("left") || key.equals("right")) {
-      this.player = this.player.movePlayer(key);
+      this.player = this.player.movePlayer(key, this.maze2);
     }
   }
   
@@ -210,6 +209,7 @@ class MazeWorld extends World {
 
     this.maze2 = tempMaze;
     this.hash = tempHash;
+    this.player = new Player(this.maze2.get(0));
   }
 
   // Kruskal's algorithm
@@ -355,6 +355,13 @@ class ExamplesMaze {
     Node n2 = new Node(new Posn(0, 0));
     t.checkExpect(n1.connect(n2).to, n2);
   }
+  
+  // test that posn's .equals() is in fact overridden 
+  void testPosn(Tester t) {
+    Posn p1 = new Posn(1,1);
+    Posn p2 = new Posn(1,1);
+    t.checkExpect(p1.equals(p2), true);
+  }
 
   // test init hash
   void testInitHash(Tester t) {
@@ -379,23 +386,43 @@ class ExamplesMaze {
     t.checkExpect(n.getColor(ex1), Color.GREEN);
   }
   
+  // test connects in the edge class 
+  void testConnects(Tester t) {
+    Posn p = new Posn(0,0);
+    Node n1 = new Node(p);
+    Node n2 = new Node(p);
+    Node n3 = new Node(p);
+    Edge e = new Edge(1, n1,n2);
+    t.checkExpect(e.connects(n1, n2), true);
+    t.checkExpect(e.connects(n2, n1), true);
+    t.checkExpect(e.connects(n3, n1), false);
+    t.checkExpect(e.connects(n1, n3), false);
+  }
+  
+  // test the hasEdge method in the Node Class
+  void testHasEdge(Tester t) {
+    
+  }
+ 
+  /*
   // Test the player movement
   void testPlayerMove(Tester t) {
+    this.initTest3();
     Posn origin = new Posn(0,0);
-    Player p = new Player(origin);
-    p = p.movePlayer("up");
+    Player p = ex1.player;
+    p = p.movePlayer("up", ex1.maze2);
     t.checkExpect(p.x, origin.x);
     t.checkExpect(p.y, origin.y - 1);
-    p = p.movePlayer("down");
+    p = p.movePlayer("down", ex1.maze2);
     t.checkExpect(p.x, origin.x);
     t.checkExpect(p.y, origin.y);
-    p = p.movePlayer("left");
+    p = p.movePlayer("left", ex1.maze2);
     t.checkExpect(p.x, origin.x - 1);
     t.checkExpect(p.y, origin.y);
-    p = p.movePlayer("right");
+    p = p.movePlayer("right", ex1.maze2);
     t.checkExpect(p.x, origin.x);
     t.checkExpect(p.y, origin.y);
-  }
+  } */
 
   // Test the rendering
   void testRender(Tester t) {

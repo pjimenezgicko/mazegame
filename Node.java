@@ -37,6 +37,16 @@ class Node {
     to.outEdges.add(e2);
     return e1;
   }
+  
+  // does this node have an out edge to the given node? 
+  public boolean hasEdge(Node to) {
+    for (Edge e : this.outEdges) {
+      if (e.connects(this,to)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   // create image of tile
   public WorldImage drawAt(WorldImage background, MazeWorld world) {

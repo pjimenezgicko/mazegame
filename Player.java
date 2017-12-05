@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.util.ArrayList;
 
 import javalib.worldimages.CircleImage;
 import javalib.worldimages.OutlineMode;
@@ -14,11 +15,13 @@ class Player {
   Posn location;
   int x;
   int y;
+  Node node;
 
-  Player(Posn loc) {
-    this.location = loc;
-    this.x = loc.x;
-    this.y = loc.y;
+  Player(Node node) {
+    this.node = node;
+    this.location = node.xy;
+    this.x = node.x;
+    this.y = node.y;
   }
 
   // Draws this player onto the background
@@ -28,10 +31,11 @@ class Player {
   }
 
   // move this player in the given direction
-  public Player movePlayer(String direction) {
+  public Player movePlayer(String direction, ArrayList<Node> maze) {
 
     int speed = 1;
     Posn target;
+    Node goTo;
 
     if (direction.equals("up")) {
       target = new Posn(this.x, this.y - speed);
@@ -48,7 +52,15 @@ class Player {
     else {
       throw new IllegalArgumentException("Not a valid direction to move");
     }
-
-    return new Player(target);
+    
+    // check if there is a node with the desired Posn
+    for (Node n : maze) {
+      // look for a node with our target
+      if (n.xy.equals(target)) {
+        goTo = n;
+      }      
+    }
+    
+    return this;
   }
 }
