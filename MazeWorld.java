@@ -409,9 +409,11 @@ class ExamplesMaze {
     t.checkExpect(n1.hasEdge(n2), true);
     t.checkExpect(n1.hasEdge(n3), false);
     t.checkExpect(n1.hasEdge(null), false);
+    t.checkExpect(n1.hasEdge(n1), false);
+    
   }
  
-  /*
+  
   // Test the player movement
   void testPlayerMove(Tester t) {
     this.initTest3();
@@ -429,7 +431,7 @@ class ExamplesMaze {
     p = p.movePlayer("right", ex1.maze2);
     t.checkExpect(p.x, origin.x);
     t.checkExpect(p.y, origin.y);
-  } */
+  } 
 
   // Test the rendering
   void testRender(Tester t) {

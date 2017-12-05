@@ -31,11 +31,12 @@ class Player {
   }
 
   // move this player in the given direction
+  // Effect: update the current node as visited
   public Player movePlayer(String direction, ArrayList<Node> maze) {
 
     int speed = 1;
     Posn target;
-    Node goTo;
+    Node goTo = this.node; // if goTo node is still this.node at the end we won't move
 
     if (direction.equals("up")) {
       target = new Posn(this.x, this.y - speed);
@@ -63,6 +64,7 @@ class Player {
     
     // if there is an edge between this node and the desired position move us there 
     if (this.node.hasEdge(goTo)) {
+      this.node.visited = true;
       return new Player(goTo);
     }
     
