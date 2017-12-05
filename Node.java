@@ -8,6 +8,7 @@ class Node {
   Posn xy;
   int x;
   int y;
+  boolean visited;
 
   Node(Posn posn) {
     this.outEdges = new ArrayList<Edge>();
@@ -49,7 +50,12 @@ class Node {
     // bottom right
     if (x == world.height - 1 && y == world.width - 1) {
       return Color.MAGENTA;
-    } 
+    }
+    
+    // has been visited by the player 
+    if (this.visited) {
+      return Color.CYAN;
+    }
     // everywhere else
     else {
       return Color.LIGHT_GRAY;

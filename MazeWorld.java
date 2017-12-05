@@ -35,11 +35,15 @@ class MazeWorld extends World {
   WorldImage image = new EmptyImage();
   // temp for testing
   WorldScene scene = new WorldScene(this.height * 100, this.width * 100);
+  
+  // represent the Player
+  Player player;
 
   // allows for variable sized mazes for testing
   MazeWorld(int height, int width) {
     this.height = height;
     this.width = width;
+    this.player = new Player(new Posn(0,0));
   }
 
   public WorldScene makeScene() {
@@ -78,7 +82,26 @@ class MazeWorld extends World {
             e.to.x * node + node / 2, e.to.y * node); // bottom
       }
     }
+    
+    // draw the player 
+    w.placeImageXY(this.player.drawAt(this.image), this.player.x * node + node/2 + 1, this.player.y * node + node/2 + 1);
     return w;
+  }
+
+  // Handle the key presses of the player
+  // EFFECT: move the player character and restart the game if needed
+  public void onKeyEvent(String key) {
+    // handle player movement using the arrow keys
+    if (key.equals("up") || key.equals("down") || key.equals("left") || key.equals("right")) {
+      this.player = this.player.movePlayer(key);
+    }
+  }
+  
+  public void onTick() {
+    // if the player is on the end node of the maze they win
+    if (this.player.x == MazeWorld.NODE_SIZE - 1 && this.player.y == MazeWorld.NODE_SIZE - 1) {
+      this.endOfWorld("YOU WIN!!!");
+    }
   }
 
   // Init empty maze arraylist
@@ -347,12 +370,30 @@ class ExamplesMaze {
     Node n = new Node(new Posn(0, 0));
     t.checkExpect(n.getColor(ex1), Color.GREEN);
   }
+  
+  // Test the player movement
+  void testPlayerMove(Tester t) {
+    Posn origin = new Posn(0,0);
+    Player p = new Player(origin);
+    p = p.movePlayer("up");
+    t.checkExpect(p.x, origin.x);
+    t.checkExpect(p.y, origin.y - 1);
+    p = p.movePlayer("down");
+    t.checkExpect(p.x, origin.x);
+    t.checkExpect(p.y, origin.y);
+    p = p.movePlayer("left");
+    t.checkExpect(p.x, origin.x - 1);
+    t.checkExpect(p.y, origin.y);
+    p = p.movePlayer("right");
+    t.checkExpect(p.x, origin.x);
+    t.checkExpect(p.y, origin.y);
+  }
 
   // Test the rendering
   void testRender(Tester t) {
     ex1 = new MazeWorld(25, 25);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
-    ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE, ex1.width * MazeWorld.NODE_SIZE, 0);
+    ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE, ex1.width * MazeWorld.NODE_SIZE, 1);
   }
 }
