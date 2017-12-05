@@ -13,10 +13,10 @@ class MazeWorld extends World {
   int width;
 
   // Size of node
-  static final int NODE_SIZE = 30;
+  static final int NODE_SIZE = 25;
 
   // Range of our random numbers
-  static final int RAND_RANGE = 50;
+  static final int RAND_RANGE = 25;
 
   // Maze represented as a 2D Arraylist of Nodes
   ArrayList<ArrayList<Node>> maze;
@@ -32,6 +32,9 @@ class MazeWorld extends World {
   WorldImage image = new EmptyImage();
   // temp for testing
   WorldScene scene = new WorldScene(this.height * 100, this.width * 100);
+  
+  // represent the Player
+  Player player;
 
   // Starting node
   Node start = this.maze2.get(0);
@@ -90,6 +93,33 @@ class MazeWorld extends World {
             e.to.x * node + node / 2, e.to.y * node); // bottom
       }
     }
+    
+    // draw the player 
+    w.placeImageXY(this.player.drawAt(this.image), this.player.x * node + node/2 + 1, this.player.y * node + node/2 + 1);
+    return w;
+  }
+
+  // Handle the key presses of the player
+  // EFFECT: move the player character and restart the game if needed
+  public void onKeyEvent(String key) {
+    // handle player movement using the arrow keys
+    if (key.equals("up") || key.equals("down") || key.equals("left") || key.equals("right")) {
+      this.player = this.player.movePlayer(key, this.maze2);
+    }
+  }
+  
+  public void onTick() {
+    // if the player is on the end node of the maze they win
+    if (this.player.x == MazeWorld.NODE_SIZE - 1 && this.player.y == MazeWorld.NODE_SIZE - 1) {
+      this.endOfWorld("YOU WIN!!!");
+    }
+  }
+  
+  // Last Scene when the player wins!
+  public WorldScene lastScene(String msg) {
+    WorldScene w = new WorldScene(this.width * 100,
+        this.height * 100);
+    w.placeImageXY(new TextImage(msg, Color.RED), this.width / 2 * MazeWorld.NODE_SIZE, this.height / 2 * MazeWorld.NODE_SIZE);
     return w;
   }
 
@@ -191,6 +221,7 @@ class MazeWorld extends World {
 
     this.maze2 = tempMaze;
     this.hash = tempHash;
+    this.player = new Player(this.maze2.get(0));
   }
 
   // Kruskal's algorithm
@@ -403,6 +434,13 @@ class ExamplesMaze {
     Node n2 = new Node(new Posn(0, 0));
     t.checkExpect(n1.connect(n2).to, n2);
   }
+  
+  // test that posn's .equals() is in fact overridden 
+  void testPosn(Tester t) {
+    Posn p1 = new Posn(1,1);
+    Posn p2 = new Posn(1,1);
+    t.checkExpect(p1.equals(p2), true);
+  }
 
   // test init hash
   void testInitHash(Tester t) {
@@ -426,12 +464,50 @@ class ExamplesMaze {
     Node n = new Node(new Posn(0, 0));
     t.checkExpect(n.getColor(ex1), Color.GREEN);
   }
+  
+  // test connects in the edge class 
+  void testConnects(Tester t) {
+    Posn p = new Posn(0,0);
+    Node n1 = new Node(p);
+    Node n2 = new Node(p);
+    Node n3 = new Node(p);
+    Edge e = new Edge(1, n1,n2);
+    t.checkExpect(e.connects(n1, n2), true);
+    t.checkExpect(e.connects(n2, n1), true);
+    t.checkExpect(e.connects(n3, n1), false);
+    t.checkExpect(e.connects(n1, n3), false);
+  }
+  
+  // test the hasEdge method in the Node Class
+  void testHasEdge(Tester t) {
+    
+  }
+ 
+  /*
+  // Test the player movement
+  void testPlayerMove(Tester t) {
+    this.initTest3();
+    Posn origin = new Posn(0,0);
+    Player p = ex1.player;
+    p = p.movePlayer("up", ex1.maze2);
+    t.checkExpect(p.x, origin.x);
+    t.checkExpect(p.y, origin.y - 1);
+    p = p.movePlayer("down", ex1.maze2);
+    t.checkExpect(p.x, origin.x);
+    t.checkExpect(p.y, origin.y);
+    p = p.movePlayer("left", ex1.maze2);
+    t.checkExpect(p.x, origin.x - 1);
+    t.checkExpect(p.y, origin.y);
+    p = p.movePlayer("right", ex1.maze2);
+    t.checkExpect(p.x, origin.x);
+    t.checkExpect(p.y, origin.y);
+  } */
 
   // Test the rendering
   void testRender(Tester t) {
-    ex1 = new MazeWorld(32, 64);
+    ex1 = new MazeWorld(25, 25);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
-    ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE, ex1.width * MazeWorld.NODE_SIZE, 0);
+    ex1.bigBang(ex1.height * MazeWorld.NODE_SIZE, ex1.width * MazeWorld.NODE_SIZE, 1);
   }
 }

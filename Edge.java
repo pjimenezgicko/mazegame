@@ -18,4 +18,10 @@ class Edge {
   public WorldImage drawAt(WorldImage background, MazeWorld world) {
     return new LineImage(this.from.xy, Color.BLACK);
   }
+  
+  // does this edge connect the given nodes? 
+  public boolean connects(Node node1, Node node2) {
+    return this.to.equals(node1) && this.from.equals(node2) ||
+        this.to.equals(node2) && this.from.equals(node1);
+  }
 }
