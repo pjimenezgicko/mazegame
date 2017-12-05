@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.*;
 import java.awt.Color;
 import javalib.worldimages.*;
 
@@ -9,7 +9,10 @@ class Node {
   int x;
   int y;
   boolean visited;
-
+  boolean fullPath = false;
+  boolean directPath = false;
+  Node parent; // Only used for breadth first search
+  
   Node(Posn posn) {
     this.outEdges = new ArrayList<Edge>();
     this.xy = posn;
@@ -66,13 +69,24 @@ class Node {
     if (x == 0 && y == 0) {
       return Color.GREEN;
     }
+    
     // bottom right
-    if (x == world.nodesTall - 1 && y == world.nodesWide - 1) {
+    else if (x == world.nodesTall - 1 && y == world.nodesWide - 1) {
       return Color.MAGENTA;
     }
     
     // has been visited by the player 
-    if (this.visited) {
+    else if (this.visited) {
+      return Color.RED;
+    }
+    
+    // part of direct path
+    else if (this.directPath) {
+      return Color.BLUE;
+    }
+    
+    // part of full path
+    else if (this.fullPath) {
       return Color.CYAN;
     }
     // everywhere else
@@ -80,4 +94,13 @@ class Node {
       return Color.LIGHT_GRAY;
     }
   }
+  
+  public void setParent(Node node) {
+    this.parent = node;
+  }
+  
+  
+  //--------------------- PART 2 ---------------------------
+  
+  
 }

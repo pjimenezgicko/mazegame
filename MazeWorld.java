@@ -1,12 +1,10 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.function.Predicate;
+import java.util.*;
 
 import tester.*;
 import javalib.impworld.*;
 import java.awt.Color;
+import java.awt.List;
+
 import javalib.worldimages.*;
 
 class MazeWorld extends World {
@@ -45,6 +43,25 @@ class MazeWorld extends World {
   // represent the Player
   Player player;
 
+  // Starting node
+  Node start;
+  
+  // Ending node
+  Node end;
+    
+  ArrayList<Node> depthPath = new ArrayList<Node>(0);
+  int dp = -1;
+  ArrayList<Node> depthPathFull = new ArrayList<Node>(0);
+  int dpf = -1;
+  ArrayList<Node> breadthPath = new ArrayList<Node>(0);
+  int bp = -1;
+  ArrayList<Node> breadthPathFull = new ArrayList<Node>(0);
+  int bpf = -1;
+  
+  // For timing the solving of the maze animation
+  boolean solveBreadth = false;
+  boolean solveDepth = false;
+  
   // allows for variable sized mazes for testing
   MazeWorld(int nodesTall, int nodesWide) {
     this.nodesTall = nodesTall;
@@ -99,12 +116,57 @@ class MazeWorld extends World {
     if (key.equals("up") || key.equals("down") || key.equals("left") || key.equals("right")) {
       this.player = this.player.movePlayer(key, this.maze2, this.walls);
     }
+    
+    if (key.equals("b")) {
+      this.solveBreadth = true;
+      this.bpf = 0;
+    }
+    
+    if (key.equals("d")) {
+      this.solveDepth = true;
+      this.dp = 0;
+      this.dpf = 0;
+    }
   }
   
   public void onTick() {
     // if the player is on the end node of the maze they win
     if (this.player.x == this.nodesWide - 1 && this.player.y == this.nodesTall - 1) {
       this.endOfWorld("YOU WIN!!!");
+    }
+    
+    if (this.bpf != -1) {
+      this.breadthPathFull.get(0).fullPath = true;
+      this.bpf++;
+      if (this.bpf == this.breadthPathFull.size()) {
+        this.bpf = -1;
+        this.bp = 0;
+      }
+    }
+    
+    if (this.bp != -1) {
+      this.breadthPath.get(0).directPath = true;
+      this.bp++;
+      if (this.bp == this.breadthPath.size()) {
+        this.bp = -1;
+      }
+    }
+    
+     if (this.dpf != -1) {
+      this.depthPathFull.get(0).fullPath = true;
+      this.dpf++;
+      if (this.dpf == this.depthPathFull.size()) {
+        this.dpf = -1;
+        this.dp = 0;
+      }
+    }
+    
+    if (this.dp != -1) {
+      this.depthPath.get(0).directPath = true;
+      this.dp++;
+      if (this.dp == this.depthPath.size()) {
+        this.dp = -1;
+      }
     }
   }
   
@@ -213,6 +275,8 @@ class MazeWorld extends World {
     }
 
     this.maze2 = tempMaze;
+    this.start = this.maze2.get(0);
+    this.end = this.maze2.get(this.maze2.size() - 1);
     this.hash = tempHash;
     this.player = new Player(this.maze2.get(0));
   }
@@ -288,7 +352,7 @@ class MazeWorld extends World {
 
 
   }
-
+ 
   // same as find function for kruskals
   Node baseRep(Node a, HashMap<Node, Node> base) {
     if (base.get(a) == a) {
@@ -297,6 +361,70 @@ class MazeWorld extends World {
     else {
       return baseRep(base.get(a), base);
     }
+  }
+  
+  void BreadthSearch(Node root) {
+    ArrayList<Node> list = new ArrayList<Node>(0);
+    list.add(root);
+    root.setParent(null);
+
+    while (!list.isEmpty()) {
+      // Choose node and remove it from front of list
+      Node node = list.get(0);
+      this.breadthPathFull.add(node);
+      list.remove(0);
+      
+      // Visit node and check it out
+      if (node == this.end) {
+        break;
+      }
+      // Analyze its out edges, except one it came from
+      for(Edge e : node.outEdges) {
+        if (e.to == node) {
+          e.to.setParent(node);
+          list.add(e.to);
+        }
+      }
+    }
+    recreatePath();
+  }
+  
+  void recreatePath() {
+    Stack<Node> stack = new Stack<Node>();
+    
+    Node node = this.end;
+    while (node.parent != null) {
+      stack.push(node);
+      node = node.parent;
+    }
+    this.breadthPath = new ArrayList<Node>(stack);
+  }
+  
+  Node DepthSearch(Node root) {
+    if (root == this.end) {
+      this.depthPath.add(root);
+      this.depthPathFull.add(root);
+      return this.end;
+    }
+    else if (root.outEdges.isEmpty()) {
+      return null;
+    }
+    else {
+      for (Edge e : root.outEdges) {
+        this.depthPath.add(root);
+        this.depthPathFull.add(root);
+        
+        if (DepthSearch(e.to) == null) {
+          this.depthPath.remove(this.depthPath.size() - 1);
+          return null;
+        }
+        else {
+          return this.end;
+        }
+      }
+    }
+    // Wont do anything, eclipse is stupid and wants it here
+    return null;
   }
 }
 
@@ -489,6 +617,8 @@ class ExamplesMaze {
     ex1 = new MazeWorld(25, 25);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
+    ex1.BreadthSearch(ex1.start);
+    //ex1.DepthSearch(ex1.start);
     ex1.bigBang(ex1.nodesTall * MazeWorld.NODE_SIZE, ex1.nodesWide * MazeWorld.NODE_SIZE, 1);
   }
 }
