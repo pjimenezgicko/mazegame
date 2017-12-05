@@ -44,18 +44,18 @@ class MazeWorld extends World {
   Player player;
 
   // Starting node
-  Node start = this.maze2.get(0);
+  Node start;
   
   // Ending node
-  Node end = this.maze2.get(this.maze2.size());
+  Node end;
     
-  ArrayList<Node> depthPath = null;
+  ArrayList<Node> depthPath = new ArrayList<Node>(0);
   int dp = -1;
-  ArrayList<Node> depthPathFull = null;
+  ArrayList<Node> depthPathFull = new ArrayList<Node>(0);
   int dpf = -1;
-  ArrayList<Node> breadthPath = null;
+  ArrayList<Node> breadthPath = new ArrayList<Node>(0);
   int bp = -1;
-  ArrayList<Node> breadthPathFull = null;
+  ArrayList<Node> breadthPathFull = new ArrayList<Node>(0);
   int bpf = -1;
   
   // For timing the solving of the maze animation
@@ -275,6 +275,8 @@ class MazeWorld extends World {
     }
 
     this.maze2 = tempMaze;
+    this.start = this.maze2.get(0);
+    this.end = this.maze2.get(this.maze2.size() - 1);
     this.hash = tempHash;
     this.player = new Player(this.maze2.get(0));
   }
@@ -362,7 +364,7 @@ class MazeWorld extends World {
   }
   
   void BreadthSearch(Node root) {
-    ArrayList<Node> list = null;
+    ArrayList<Node> list = new ArrayList<Node>(0);
     list.add(root);
     root.setParent(null);
 
@@ -388,7 +390,7 @@ class MazeWorld extends World {
   }
   
   void recreatePath() {
-    Stack<Node> stack = null;
+    Stack<Node> stack = new Stack<Node>();
     
     Node node = this.end;
     while (node.parent != null) {
@@ -612,9 +614,11 @@ class ExamplesMaze {
   // Test the rendering
   void testRender(Tester t) {
     // these inputs represent the number of nodes in the maze
-    ex1 = new MazeWorld(10, 10);
+    ex1 = new MazeWorld(25, 25);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
+    ex1.BreadthSearch(ex1.start);
+    //ex1.DepthSearch(ex1.start);
     ex1.bigBang(ex1.nodesTall * MazeWorld.NODE_SIZE, ex1.nodesWide * MazeWorld.NODE_SIZE, 1);
   }
 }
