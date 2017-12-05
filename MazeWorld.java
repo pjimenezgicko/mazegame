@@ -486,7 +486,7 @@ class ExamplesMaze {
   // Test the rendering
   void testRender(Tester t) {
     // these inputs represent the number of nodes in the maze
-    ex1 = new MazeWorld(25, 30);
+    ex1 = new MazeWorld(10, 10);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
     ex1.bigBang(ex1.nodesTall * MazeWorld.NODE_SIZE, ex1.nodesWide * MazeWorld.NODE_SIZE, 1);
