@@ -56,7 +56,7 @@ class MazeWorld extends World {
     int node = MazeWorld.NODE_SIZE;
     // Render the Cells
     for (Node n : this.maze2) {
-      w.placeImageXY(n.drawAt(this.image, this), n.x * node, n.y * node);
+      w.placeImageXY(n.drawAt(this.image, this), n.x * this.nodesWide, n.y * this.nodesTall);
     }
 
     // draw the top border
