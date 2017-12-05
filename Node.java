@@ -27,7 +27,16 @@ class Node {
     to.outEdges.add(e2);
     return e1;
   }
-
+  
+  // Same as connect but given weight, not random
+  public Edge connectTest(Node to, int weight) {
+    Utils<Node> u = new Utils<Node>();
+    Edge e1 = new Edge(weight, to, this);
+    Edge e2 = new Edge(weight, this, to);
+    this.outEdges.add(e1);
+    to.outEdges.add(e2);
+    return e1;
+  }
   public WorldImage drawAt(WorldImage background, MazeWorld world) {
     return new OverlayOffsetImage(
         new RectangleImage(MazeWorld.NODE_SIZE, MazeWorld.NODE_SIZE, OutlineMode.SOLID,
