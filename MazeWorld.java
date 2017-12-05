@@ -103,7 +103,7 @@ class MazeWorld extends World {
   
   public void onTick() {
     // if the player is on the end node of the maze they win
-    if (this.player.x == MazeWorld.NODE_SIZE - 1 && this.player.y == MazeWorld.NODE_SIZE - 1) {
+    if (this.player.x == this.nodesWide - 1 && this.player.y == this.nodesTall - 1) {
       this.endOfWorld("YOU WIN!!!");
     }
   }
