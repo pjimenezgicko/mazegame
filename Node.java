@@ -55,8 +55,8 @@ class Node {
   // create image of tile
   public WorldImage drawAt(WorldImage background, MazeWorld world) {
     return new OverlayOffsetImage(
-        new RectangleImage(MazeWorld.NODE_SIZE,
-            MazeWorld.NODE_SIZE,
+        new RectangleImage(world.NODE_SIZE,
+            world.NODE_SIZE,
             OutlineMode.SOLID,
             this.getColor(world)),
         world.nodesWide,world.nodesTall,
@@ -81,7 +81,7 @@ class Node {
     }
     
     // part of direct path
-    else if (this.directPath) {
+    if (this.directPath) {
       System.out.println("make it blue");
       return Color.BLUE;
     }
