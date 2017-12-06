@@ -8,20 +8,25 @@ import java.awt.List;
 import javalib.worldimages.*;
 
 class MazeWorld extends World {
-
+  
+  
   // Size of the maze
   int nodesTall;
-
   int nodesWide;
+  int nodeSize;
+  
+  // Default size of the window 
+  static final int WIDTH = 1200;
+  static final int HEIGHT = 800; 
 
   // Size of node
-  static final int NODE_SIZE = 30;
+  static final int NODE_SIZE = 10;
 
   // Range of our random numbers
   static final int RAND_RANGE = 25;
   
   // Scaling factor of our maze
-  static final int SCALE = 100;
+  static final int SCALE = 25;
 
   // Maze represented as a 2D Arraylist of Nodes
   ArrayList<ArrayList<Node>> maze;
@@ -66,7 +71,10 @@ class MazeWorld extends World {
   MazeWorld(int nodesWide, int nodesTall) {
     this.nodesWide = nodesWide;
     this.nodesTall = nodesTall;
-    
+    if (nodesWide * 10 > MazeWorld.WIDTH) {
+      this.nodeSize = MazeWorld.WIDTH/nodesWide;
+    }
+    else { this.nodeSize = 10;}    
   }
 
   public WorldScene makeScene() {
@@ -86,12 +94,12 @@ class MazeWorld extends World {
         .movePinhole(0, -(node * this.nodesTall) / 2 + 1), 0, 0);
     
     // draw the bottom border
-    w.placeImageXY(new LineImage(new Posn(node * this.nodesTall, 0), Color.BLACK)
+    w.placeImageXY(new LineImage(new Posn(node * this.nodesWide, 0), Color.BLACK)
         .movePinhole(-(node * this.nodesWide) / 2, -(node * this.nodesTall) + 1), 0, 0);
 
     // draw the right border
     w.placeImageXY(new LineImage(new Posn(0, -node * this.nodesTall), Color.BLACK)
-        .movePinhole(-(node * this.nodesTall) + 1, -(node * this.nodesTall) / 2 + 1), 0, 0);
+        .movePinhole(-(node * this.nodesWide) + 1, -(node * this.nodesTall) / 2 + 1), 0, 0);
 
     // draw the inner walls
     for (Edge e : this.edges) {
@@ -645,7 +653,7 @@ class ExamplesMaze {
   // Test the rendering
   void testRender(Tester t) {
     // these inputs represent the number of nodes in the maze
-    ex1 = new MazeWorld(10, 20);
+    ex1 = new MazeWorld(100, 20);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
     ex1.BreadthSearch(ex1.start);
