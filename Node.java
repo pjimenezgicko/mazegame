@@ -59,7 +59,7 @@ class Node {
             world.NODE_SIZE,
             OutlineMode.SOLID,
             this.getColor(world)),
-        world.nodesWide,world.nodesTall,
+        world.nodesWide,-world.nodesTall,
         background);
   }
 
