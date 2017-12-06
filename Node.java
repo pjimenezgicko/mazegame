@@ -55,11 +55,11 @@ class Node {
   // create image of tile
   public WorldImage drawAt(WorldImage background, MazeWorld world) {
     return new OverlayOffsetImage(
-        new RectangleImage(world.NODE_SIZE,
-            world.NODE_SIZE,
+        new RectangleImage(MazeWorld.NODE_SIZE,
+            MazeWorld.NODE_SIZE,
             OutlineMode.SOLID,
             this.getColor(world)),
-        world.nodesWide,-world.nodesTall,
+        5 - world.nodesWide,5 - world.nodesTall,
         background);
   }
 
@@ -82,13 +82,11 @@ class Node {
     
     // part of direct path
     if (this.directPath) {
-      System.out.println("make it blue");
       return Color.BLUE;
     }
     
     // part of full path
     else if (this.fullPath) {
-      System.out.println("make it cyan");
       return Color.CYAN;
     }
     // everywhere else
