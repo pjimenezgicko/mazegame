@@ -59,7 +59,7 @@ class Node {
             MazeWorld.NODE_SIZE,
             OutlineMode.SOLID,
             this.getColor(world)),
-        5 - world.nodesWide,5 - world.nodesTall,
+        0,0,
         background);
   }
 

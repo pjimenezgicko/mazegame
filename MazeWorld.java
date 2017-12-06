@@ -74,7 +74,7 @@ class MazeWorld extends World {
     int node = MazeWorld.NODE_SIZE;
     // Render the Cells
     for (Node n : this.maze2) {
-      w.placeImageXY(n.drawAt(this.image, this), n.x * node + this.nodesWide/2, n.y * node + this.nodesTall/2);
+      w.placeImageXY(n.drawAt(this.image, this), n.x * node + this.nodesWide/2 + 1, n.y * node + this.nodesTall/2 + 1);
     }
 
     // draw the top border
@@ -650,6 +650,6 @@ class ExamplesMaze {
     ex1.kruskalsAlg();
     ex1.BreadthSearch(ex1.start);
     ex1.DepthSearch(ex1.start);
-    ex1.bigBang(ex1.nodesTall * MazeWorld.NODE_SIZE, ex1.nodesWide * MazeWorld.NODE_SIZE, .1);
+    ex1.bigBang(ex1.nodesWide * MazeWorld.NODE_SIZE, ex1.nodesTall * MazeWorld.NODE_SIZE, .1);
   }
 }
