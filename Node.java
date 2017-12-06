@@ -11,6 +11,7 @@ class Node {
   boolean visited;
   boolean fullPath = false;
   boolean directPath = false;
+  boolean marked = false;
   Node parent; // Only used for breadth first search
   
   Node(Posn posn) {
@@ -81,11 +82,13 @@ class Node {
     
     // part of direct path
     else if (this.directPath) {
+      System.out.println("make it blue");
       return Color.BLUE;
     }
     
     // part of full path
     else if (this.fullPath) {
+      System.out.println("make it cyan");
       return Color.CYAN;
     }
     // everywhere else
