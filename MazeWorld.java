@@ -118,13 +118,11 @@ class MazeWorld extends World {
     }
     
     if (key.equals("b")) {
-      this.solveBreadth = true;
       this.bpf = 0;
+      System.out.println("heyoo");
     }
     
     if (key.equals("d")) {
-      this.solveDepth = true;
-      this.dp = 0;
       this.dpf = 0;
     }
   }
@@ -136,16 +134,18 @@ class MazeWorld extends World {
     }
     
     if (this.bpf != -1) {
-      this.breadthPathFull.get(0).fullPath = true;
+      this.breadthPathFull.get(bpf).fullPath = true;
       this.bpf++;
+      
       if (this.bpf == this.breadthPathFull.size()) {
         this.bpf = -1;
         this.bp = 0;
       }
     }
     
-    if (this.bp != -1) {
-      this.breadthPath.get(0).directPath = true;
+    else if (this.bp != -1) {
+      System.out.println(this.breadthPath.size());
+      this.breadthPath.get(bp).directPath = true;
       this.bp++;
       if (this.bp == this.breadthPath.size()) {
         this.bp = -1;
@@ -278,7 +278,7 @@ class MazeWorld extends World {
     this.start = this.maze2.get(0);
     this.end = this.maze2.get(this.maze2.size() - 1);
     this.hash = tempHash;
-    this.player = new Player(this.maze2.get(0));
+    this.player = new Player(this.start);
   }
 
   // Kruskal's algorithm
@@ -367,20 +367,24 @@ class MazeWorld extends World {
     ArrayList<Node> list = new ArrayList<Node>(0);
     list.add(root);
     root.setParent(null);
-
+    root.marked = true;
     while (!list.isEmpty()) {
       // Choose node and remove it from front of list
-      Node node = list.get(0);
+      Node node = list.remove(0);
       this.breadthPathFull.add(node);
-      list.remove(0);
       
+        System.out.println(node.outEdges.size());
       // Visit node and check it out
       if (node == this.end) {
+        System.out.println("hey we done");
         break;
       }
-      // Analyze its out edges, except one it came from
+      // Analyze its out edges, and check if marked 
       for(Edge e : node.outEdges) {
-        if (e.to == node) {
+        
+//        System.out.println(node.outEdges.size());
+        if (!e.to.marked) {
+          e.to.marked = true;
           e.to.setParent(node);
           list.add(e.to);
         }
@@ -397,7 +401,11 @@ class MazeWorld extends World {
       stack.push(node);
       node = node.parent;
     }
+    System.out.println(stack.size());
+    System.out.println(breadthPath.size());
+    System.out.println(breadthPathFull.size());
     this.breadthPath = new ArrayList<Node>(stack);
+    System.out.println(breadthPath.size());
   }
   
   Node DepthSearch(Node root) {
@@ -618,7 +626,7 @@ class ExamplesMaze {
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
     ex1.BreadthSearch(ex1.start);
-    //ex1.DepthSearch(ex1.start);
-    ex1.bigBang(ex1.nodesTall * MazeWorld.NODE_SIZE, ex1.nodesWide * MazeWorld.NODE_SIZE, 1);
+    ex1.DepthSearch(ex1.start);
+    ex1.bigBang(ex1.nodesTall * MazeWorld.NODE_SIZE, ex1.nodesWide * MazeWorld.NODE_SIZE, .1);
   }
 }
