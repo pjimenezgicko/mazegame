@@ -71,7 +71,7 @@ class Node {
     }
     
     // bottom right
-    else if (x == world.nodesTall - 1 && y == world.nodesWide - 1) {
+    else if (x == world.nodesWide - 1 && y == world.nodesTall - 1) {
       return Color.MAGENTA;
     }
     

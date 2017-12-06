@@ -38,7 +38,7 @@ class MazeWorld extends World {
   // image for the game
   WorldImage image = new EmptyImage();
   // temp for testing
-  WorldScene scene = new WorldScene(this.nodesTall * SCALE, this.nodesWide * SCALE);
+  WorldScene scene = new WorldScene(this.nodesWide * SCALE, this.nodesTall * SCALE);
   
   // represent the Player
   Player player;
@@ -63,13 +63,14 @@ class MazeWorld extends World {
   boolean solveDepth = false;
   
   // allows for variable sized mazes for testing
-  MazeWorld(int nodesTall, int nodesWide) {
-    this.nodesTall = nodesTall;
+  MazeWorld(int nodesWide, int nodesTall) {
     this.nodesWide = nodesWide;
+    this.nodesTall = nodesTall;
+    
   }
 
   public WorldScene makeScene() {
-    WorldScene w = new WorldScene(this.nodesTall * SCALE, this.nodesWide * SCALE);
+    WorldScene w = new WorldScene(this.nodesWide * SCALE, this.nodesTall * SCALE);
     int node = MazeWorld.NODE_SIZE;
     // Render the Cells
     for (Node n : this.maze2) {
@@ -85,7 +86,7 @@ class MazeWorld extends World {
         .movePinhole(0, -(node * this.nodesTall) / 2 + 1), 0, 0);
     
     // draw the bottom border
-    w.placeImageXY(new LineImage(new Posn(node * this.nodesWide, 0), Color.BLACK)
+    w.placeImageXY(new LineImage(new Posn(node * this.nodesTall, 0), Color.BLACK)
         .movePinhole(-(node * this.nodesWide) / 2, -(node * this.nodesTall) + 1), 0, 0);
 
     // draw the right border
@@ -178,14 +179,16 @@ class MazeWorld extends World {
 
   // Init empty maze arraylist
   void initEmptyMaze() {
-    this.maze = new ArrayList<ArrayList<Node>>(this.nodesTall);
-    for (int i = 0; i < this.nodesTall; i++) {
-      ArrayList<Node> temp = new ArrayList<Node>(this.nodesWide);
-      for (int j = 0; j < this.nodesWide; j++) {
+    this.maze = new ArrayList<ArrayList<Node>>(this.nodesWide);
+    for (int i = 0; i < this.nodesWide; i++) {
+      ArrayList<Node> temp = new ArrayList<Node>(this.nodesTall);
+      for (int j = 0; j < this.nodesTall; j++) {
         temp.add(j, new Node(new Posn(i, j)));
       }
       this.maze.add(i, temp);
     }
+    System.out.println("wide -" + this.maze.size());
+    System.out.println("tall - " + this.maze.get(0).size());
     this.initEdges();
     this.initHash();
   }
@@ -194,7 +197,7 @@ class MazeWorld extends World {
   void initEdges() {
     Utils<Node> u = new Utils<Node>();
     int rightindex = this.maze.size() - 1;
-    int bottomindex = this.maze.get(this.maze.size() - 1).size() - 1;
+    int bottomindex = this.maze.get(rightindex).size() - 1;
     
     // Edges for the top left corner
     this.edges
@@ -230,7 +233,7 @@ class MazeWorld extends World {
     }
 
     // Edges for the top border
-    for (int i = 1; i < this.maze.get(this.maze.size() - 1).size() - 1; i++) {
+    for (int i = 1; i < this.maze.size() - 1; i++) {
       Posn p = new Posn(i, 0);
       this.edges.add(u.getValue(this.maze, p)
           .connect(u.getValue(this.maze, new Posn(i - 1, 0)))); // left
@@ -239,7 +242,7 @@ class MazeWorld extends World {
     }
 
     // Edges for the bottom border
-    for (int i = 1; i < this.maze.get(this.maze.size() - 1).size() - 1; i++) {
+    for (int i = 1; i < this.maze.size() - 1; i++) {
       Posn p = new Posn(i, bottomindex);
       this.edges.add(
           u.getValue(this.maze, p).connect(u.getValue(this.maze, new Posn(i - 1, bottomindex))));
@@ -337,8 +340,6 @@ class MazeWorld extends World {
         }
       }
     }
-    System.out.println(walls.size());
-    System.out.println(antispan.size());
     // set edges to the antispanning tree
     this.edges = antispan;
 
@@ -492,6 +493,11 @@ class ExamplesMaze {
     ex1 = new MazeWorld(3, 3);
     ex1.initEmptyMaze();
   }
+  
+  void initTest3x12() {
+    ex1 = new MazeWorld(3,12);
+    ex1.initEmptyMaze();
+  }
 
   // test making the empty maze
   void testInitEmptyMaze(Tester t) {
@@ -501,6 +507,10 @@ class ExamplesMaze {
     this.initTest3();
     t.checkExpect(ex1.maze.size(), 3);
     t.checkExpect(ex1.maze.get(0).size(), 3);
+    this.initTest3x12();
+    t.checkExpect(ex1.maze.size(), 3);
+    t.checkExpect(ex1.maze.get(0).size(), 12);
+    
   }
 
   // test Edge Creation
@@ -634,7 +644,7 @@ class ExamplesMaze {
   // Test the rendering
   void testRender(Tester t) {
     // these inputs represent the number of nodes in the maze
-    ex1 = new MazeWorld(25, 25);
+    ex1 = new MazeWorld(5, 25);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
     ex1.BreadthSearch(ex1.start);
