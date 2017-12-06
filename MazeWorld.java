@@ -91,7 +91,7 @@ class MazeWorld extends World {
 
     // draw the right border
     w.placeImageXY(new LineImage(new Posn(0, -node * this.nodesTall), Color.BLACK)
-        .movePinhole(-(node * this.nodesWide) + 1, -(node * this.nodesTall) / 2 + 1), 0, 0);
+        .movePinhole(-(node * this.nodesTall) + 1, -(node * this.nodesTall) / 2 + 1), 0, 0);
 
     // draw the inner walls
     for (Edge e : this.edges) {
@@ -632,11 +632,11 @@ class ExamplesMaze {
   // Test the rendering
   void testRender(Tester t) {
     // these inputs represent the number of nodes in the maze
-    ex1 = new MazeWorld(5, 25);
+    ex1 = new MazeWorld(10, 25);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
     ex1.BreadthSearch(ex1.start);
     //ex1.DepthSearch(ex1.start);
-    ex1.bigBang(ex1.nodesTall * MazeWorld.NODE_SIZE, ex1.nodesWide * MazeWorld.NODE_SIZE, .1);
+    ex1.bigBang(ex1.nodesWide * MazeWorld.NODE_SIZE, ex1.nodesTall * MazeWorld.NODE_SIZE, .1);
   }
 }
