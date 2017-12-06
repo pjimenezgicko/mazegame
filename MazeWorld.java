@@ -91,7 +91,7 @@ class MazeWorld extends World {
 
     // draw the right border
     w.placeImageXY(new LineImage(new Posn(0, -node * this.nodesTall), Color.BLACK)
-        .movePinhole(-(node * this.nodesWide) + 1, -(node * this.nodesTall) / 2 + 1), 0, 0);
+        .movePinhole(-(node * this.nodesTall) + 1, -(node * this.nodesTall) / 2 + 1), 0, 0);
 
     // draw the inner walls
     for (Edge e : this.edges) {
