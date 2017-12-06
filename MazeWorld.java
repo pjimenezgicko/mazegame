@@ -398,12 +398,13 @@ class MazeWorld extends World {
     Node node = this.end;
     while (node.parent != null) {
       arr.add(node);
+      System.out.println(node.parent == null);
       node = node.parent;
     }
     
     System.out.println(arr.size());
     System.out.println(destination.size());
-    System.out.println(breadthPathFull.size());
+    System.out.println(depthPathFull.size());
     destination = arr;
     System.out.println(destination.size());
   }
@@ -644,11 +645,11 @@ class ExamplesMaze {
   // Test the rendering
   void testRender(Tester t) {
     // these inputs represent the number of nodes in the maze
-    ex1 = new MazeWorld(5, 25);
+    ex1 = new MazeWorld(25, 25);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
     ex1.BreadthSearch(ex1.start);
-    //ex1.DepthSearch(ex1.start);
+    ex1.DepthSearch(ex1.start);
     ex1.bigBang(ex1.nodesTall * MazeWorld.NODE_SIZE, ex1.nodesWide * MazeWorld.NODE_SIZE, .1);
   }
 }
