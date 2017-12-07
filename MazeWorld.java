@@ -402,11 +402,24 @@ class MazeWorld extends World {
       node = node.parent;
     }
     
-    System.out.println(arr.size());
-    System.out.println(destination.size());
-    System.out.println(depthPathFull.size());
-    destination = arr;
-    System.out.println(destination.size());
+    if (destination.equals(this.depthPath)) {
+      System.out.println(arr.size());
+      System.out.println(destination.size());
+      System.out.println(depthPath.size());
+      System.out.println(depthPathFull.size());
+      this.depthPath = arr;
+      System.out.println(destination.size());
+      System.out.println(depthPath.size());
+    }
+    else {
+      System.out.println(arr.size());
+      System.out.println(destination.size());
+      System.out.println(breadthPath.size());
+      System.out.println(breadthPathFull.size());
+      this.breadthPath = arr;
+      System.out.println(destination.size());
+      System.out.println(breadthPath.size());
+    }
   }
   
   void DepthSearch(Node root) {
@@ -428,11 +441,21 @@ class MazeWorld extends World {
           break;
         }
         else {
-          for (Edge e : next.outEdges) {
-            System.out.println(stack.size() + " b4 push");
-            if (!e.to.marked) {
-              stack.push(e.to);
-              e.to.setParent(next);
+          ArrayList<Node> neighbors = new ArrayList<Node>(0);
+          neighbors.add(this.hash.get(new Posn(next.x, next.y + 1)));
+          neighbors.add(this.hash.get(new Posn(next.x + 1, next.y)));
+          neighbors.add(this.hash.get(new Posn(next.x, next.y - 1)));
+          neighbors.add(this.hash.get(new Posn(next.x - 1, next.y)));
+          for (Node n : neighbors) {
+            for (Edge w : this.walls){
+              if (!w.connects(next, n)) {
+                System.out.println(stack.size() + " b4 push");
+                if (!n.marked) {
+                  stack.push(n);
+                  n.setParent(next);
+                }
+                break;
+              }
             }
           }
         }
