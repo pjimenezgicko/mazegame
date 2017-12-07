@@ -20,7 +20,7 @@ class MazeWorld extends World {
   static final int HEIGHT = 800; 
 
   // Size of node
-  static final int NODE_SIZE = 10;
+  static final int NODE_SIZE = 20;
 
   // Range of our random numbers
   static final int RAND_RANGE = 25;
@@ -71,10 +71,7 @@ class MazeWorld extends World {
   MazeWorld(int nodesWide, int nodesTall) {
     this.nodesWide = nodesWide;
     this.nodesTall = nodesTall;
-    if (nodesWide * 10 > MazeWorld.WIDTH) {
-      this.nodeSize = MazeWorld.WIDTH/nodesWide;
-    }
-    else { this.nodeSize = 10;}    
+    
   }
 
   public WorldScene makeScene() {
@@ -629,7 +626,16 @@ class ExamplesMaze {
     t.checkExpect(p.apply(e, e2), false);
     
   }
- 
+  
+  // test Kruskal's alg 
+  void testKruskal(Tester t) {
+    this.initTest3();
+    ex1.kruskalsAlg();
+    t.checkExpect(ex1.walls.size(), ex1.maze2.size() - 1);
+    this.initTest3x12();
+    ex1.kruskalsAlg();
+    t.checkExpect(ex1.walls.size(), ex1.maze2.size() - 1);
+  } 
   
   // Test the player movement
   void testPlayerMove(Tester t) {
@@ -653,7 +659,7 @@ class ExamplesMaze {
   // Test the rendering
   void testRender(Tester t) {
     // these inputs represent the number of nodes in the maze
-    ex1 = new MazeWorld(100, 20);
+    ex1 = new MazeWorld(20, 20);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
     ex1.BreadthSearch(ex1.start);
