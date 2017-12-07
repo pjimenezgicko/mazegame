@@ -14,7 +14,7 @@ class Player {
   Posn location;
   int x;
   int y;
-  Node node;  
+  Node node;
 
   Player(Node node) {
     this.node = node;
@@ -25,7 +25,7 @@ class Player {
 
   // Draws this player onto the background
   WorldImage drawAt(WorldImage background) {
-    return new OverlayImage(new RectangleImage(MazeWorld.NODE_SIZE-1, MazeWorld.NODE_SIZE-1,
+    return new OverlayImage(new RectangleImage(MazeWorld.NODE_SIZE - 1, MazeWorld.NODE_SIZE - 1,
         OutlineMode.SOLID, Color.ORANGE), background);
   }
 
@@ -52,18 +52,18 @@ class Player {
     else {
       throw new IllegalArgumentException("Not a valid direction to move");
     }
-    
+
     // check if there is a node with the desired Posn
     for (Node n : maze) {
       // look for a node with our target
       if (n.xy.equals(target)) {
         goTo = n;
-      }      
+      }
     }
-    
+
     // if there is a wall between this node and the desired position we cannot
     // go there, so return this
-    for (Edge e : walls){
+    for (Edge e : walls) {
       if (e.connects(this.node, goTo)) {
         return this;
       }
