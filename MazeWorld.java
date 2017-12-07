@@ -407,11 +407,24 @@ class MazeWorld extends World {
       node = node.parent;
     }
     
-    System.out.println(arr.size());
-    System.out.println(destination.size());
-    System.out.println(depthPathFull.size());
-    destination = arr;
-    System.out.println(destination.size());
+    if (destination.equals(this.depthPath)) {
+      System.out.println(arr.size());
+      System.out.println(destination.size());
+      System.out.println(depthPath.size());
+      System.out.println(depthPathFull.size());
+      this.depthPath = arr;
+      System.out.println(destination.size());
+      System.out.println(depthPath.size());
+    }
+    else {
+      System.out.println(arr.size());
+      System.out.println(destination.size());
+      System.out.println(breadthPath.size());
+      System.out.println(breadthPathFull.size());
+      this.breadthPath = arr;
+      System.out.println(destination.size());
+      System.out.println(breadthPath.size());
+    }
   }
   
   void DepthSearch(Node root) {
@@ -437,7 +450,85 @@ class MazeWorld extends World {
             System.out.println(stack.size() + " b4 push");
             if (!e.to.marked) {
               stack.push(e.to);
-              e.to.setParent(next);
+              e.to.parent = next;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  void fixOutEdges() {
+    for (int i = 0; i < this.maze2.size(); i++) {
+      Node n = this.maze2.get(i);
+      Node up;
+      Node right;
+      if (n.y == 0 && n.x == this.nodesWide - 1) {
+        System.out.println("top right");
+      }
+      else if(n.y == 0) {
+        System.out.println("top");
+        right = this.maze2.get(i + this.nodesTall);
+        ArrayList<Node> rightNeighbors = new ArrayList<Node>(0);
+        for (Edge e : right.outEdges) {
+          rightNeighbors.add(e.to);
+        }
+        if(!rightNeighbors.contains(n)) {
+          System.out.println("Got a rightt" + n.outEdges.size());
+          Edge save;
+          for(Edge r : n.outEdges) {
+            if(r.to == right) {
+              n.outEdges.remove(r);
+              break;
+            }
+          }
+        }
+      }
+      else if(n.x == this.nodesWide - 1) {
+        System.out.println("right");
+        up = this.maze2.get(i - 1);
+        ArrayList<Node> upNeighbors = new ArrayList<Node>(0);
+        for (Edge e : up.outEdges) {
+          upNeighbors.add(e.to);
+        }
+        if(!upNeighbors.contains(n)) {
+          System.out.println("Got a upr");
+          for(Edge r : n.outEdges) {
+            if(r.to == up) {
+              n.outEdges.remove(r);
+              break;
+            }
+          }
+        }
+      }
+      else {
+        System.out.println("middle");
+        right = this.maze2.get(i + this.nodesTall);
+        ArrayList<Node> rightNeighbors = new ArrayList<Node>(0);
+        for (Edge e : right.outEdges) {
+          rightNeighbors.add(e.to);
+        }
+        if(!rightNeighbors.contains(n)) {
+          System.out.println("Got a rightt" + n.outEdges.size());
+          Edge save;
+          for(Edge r : n.outEdges) {
+            if(r.to == right) {
+              n.outEdges.remove(r);
+              break;
+            }
+          }
+        }
+        up = this.maze2.get(i - 1);
+        ArrayList<Node> upNeighbors = new ArrayList<Node>(0);
+        for (Edge e : up.outEdges) {
+          upNeighbors.add(e.to);
+        }
+        if(!upNeighbors.contains(n)) {
+          System.out.println("Got a upr");
+          for(Edge r : n.outEdges) {
+            if(r.to == up) {
+              n.outEdges.remove(r);
+              break;
             }
           }
         }
@@ -662,6 +753,7 @@ class ExamplesMaze {
     ex1 = new MazeWorld(10, 20);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
+    ex1.fixOutEdges();
     ex1.BreadthSearch(ex1.start);
     ex1.DepthSearch(ex1.start);
     ex1.bigBang(ex1.nodesWide * MazeWorld.NODE_SIZE, ex1.nodesTall * MazeWorld.NODE_SIZE, .1);
