@@ -53,19 +53,19 @@ class MazeWorld extends World {
   
   // Ending node
   Node end;
-    
+  
+  // Arrays to store path
   ArrayList<Node> depthPath = new ArrayList<Node>(0);
-  int dp = -1;
   ArrayList<Node> depthPathFull = new ArrayList<Node>(0);
-  int dpf = -1;
   ArrayList<Node> breadthPath = new ArrayList<Node>(0);
-  int bp = -1;
   ArrayList<Node> breadthPathFull = new ArrayList<Node>(0);
-  int bpf = -1;
   
   // For timing the solving of the maze animation
-  boolean solveBreadth = false;
-  boolean solveDepth = false;
+  int playerIdx = -1; // Index for player animation
+  int dp = -1; // Index for depth path
+  int dpf = -1; // Index for depth path full
+  int bp = -1; // Index for breadth path
+  int bpf = -1; // Index for breadth path full
   
   // allows for variable sized mazes for testing
   MazeWorld(int nodesWide, int nodesTall) {
@@ -134,8 +134,18 @@ class MazeWorld extends World {
   
   public void onTick() {
     // if the player is on the end node of the maze they win
-    if (this.player.x == this.nodesWide - 1 && this.player.y == this.nodesTall - 1) {
-      this.endOfWorld("YOU WIN!!!");
+    if (this.player.x == this.nodesWide - 1 && this.player.y == this.nodesTall - 1 && this.playerIdx == -1) {
+      this.playerIdx = 0;
+    }
+    
+    if (this.playerIdx != -1) {
+      this.depthPath.get(playerIdx).directPath = true;
+      this.playerIdx++;
+      
+      if (this.playerIdx == this.depthPath.size()) {
+        this.playerIdx = -2;
+        this.endOfWorld("YOU WIN!!!");
+      }
     }
     
     if (this.bpf != -1) {
@@ -288,6 +298,7 @@ class MazeWorld extends World {
   // Kruskal's algorithm
   // PS i keep track of everything but the spanning tree so i dont have to invert later
   void kruskalsAlg() {
+    // INITIALIZATION _------------------------------------
     HashMap<Node, Node> base = new HashMap<Node, Node>();
     for (Node n : this.maze2) {
       base.put(n, n);
@@ -307,6 +318,7 @@ class MazeWorld extends World {
     int i = 1;
     boolean isSpan = false;
     
+    // CREATE THE ANTISPANNING TREE -----------------------------------------------
     while (!isSpan) {
       // Get current edge from edges
       temp = this.edges.get(i);
@@ -714,7 +726,7 @@ class ExamplesMaze {
   // Test the rendering
   void testRender(Tester t) {
     // these inputs represent the number of nodes in the maze
-    ex1 = new MazeWorld(100, 60);
+    ex1 = new MazeWorld(15, 10);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
     ex1.fixOutEdges();

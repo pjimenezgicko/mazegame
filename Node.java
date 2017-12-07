@@ -75,14 +75,14 @@ class Node {
       return Color.MAGENTA;
     }
     
+    // part of direct path
+    else if (this.directPath) {
+      return Color.BLUE;
+    }
+    
     // has been visited by the player 
     else if (this.visited) {
       return Color.RED;
-    }
-    
-    // part of direct path
-    if (this.directPath) {
-      return Color.BLUE;
     }
     
     // part of full path
