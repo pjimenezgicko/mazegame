@@ -14,7 +14,7 @@ class Player {
   Posn location;
   int x;
   int y;
-  Node node;
+  Node node;  
 
   Player(Node node) {
     this.node = node;

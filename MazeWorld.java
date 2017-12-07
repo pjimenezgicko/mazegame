@@ -20,7 +20,7 @@ class MazeWorld extends World {
   static final int HEIGHT = 800; 
 
   // Size of node
-  static final int NODE_SIZE = 20;
+  static final int NODE_SIZE = 10;
 
   // Range of our random numbers
   static final int RAND_RANGE = 25;
@@ -723,9 +723,6 @@ class ExamplesMaze {
     this.initTest3();
     ex1.kruskalsAlg();
     t.checkExpect(ex1.walls.size(), ex1.maze2.size() - 1);
-    this.initTest3x12();
-    ex1.kruskalsAlg();
-    t.checkExpect(ex1.walls.size(), ex1.maze2.size() - 1);
   } 
   
   // Test the player movement
@@ -750,7 +747,7 @@ class ExamplesMaze {
   // Test the rendering
   void testRender(Tester t) {
     // these inputs represent the number of nodes in the maze
-    ex1 = new MazeWorld(10, 20);
+    ex1 = new MazeWorld(100, 60);
     ex1.initEmptyMaze();
     ex1.kruskalsAlg();
     ex1.fixOutEdges();
