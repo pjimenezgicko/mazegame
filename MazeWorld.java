@@ -128,6 +128,9 @@ class MazeWorld extends World {
     if (key.equals("d")) {
       this.dpf = 0;
     }
+    
+    if (key.equals("r")) {
+    }
   }
 
   public void onTick() {
